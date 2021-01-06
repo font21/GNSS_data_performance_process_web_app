@@ -48,3 +48,13 @@ http://seirrowon.com/GNSS_data_performance_process_web_app/4-STATIC SBAS TEST 2 
 	2) Create a new file called output-(timestamp).txt.
 	3) Add "Edited" at the top of the output.txt-(timestamp) file.
 	4) paste the reversed data of uploaded file 1 and uploaded file 2 into output.txt-(timestamp) file.
+
+# 2021.01.07
+## Deliverable for Thursday 5:00 PM CT:
+
+	Use parser from [Print_GPS_table_002 / Node-Red_NMEA-183-sentence_parser.js](https://github.com/font21/Print_GPS_table_002) to parse the sentances.
+
+# 2021.01.08
+## Deliverable for Friday 5:00 PM CT:
+
+	Use parser from [Print_GPS_table_002 / Node-Red_NMEA-183-sentence_parser.js](https://github.com/font21/Print_GPS_table_002) to align time stamps for the data.
