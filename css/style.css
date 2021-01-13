@@ -1,0 +1,9 @@
+.box{
+	color: #fff;
+	padding: 20px;
+	display: none;
+	margin-top: 20px;
+}
+.red{ background: #ff0000; }
+.green{ background: #228B22; }
+.blue{ background: #0000ff; }
