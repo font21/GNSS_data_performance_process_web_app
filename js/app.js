@@ -18,6 +18,58 @@ $(document).ready(function(){
 });
 
 
+const myForm = document.getElementById("staticUploadForm");
+const input = document.querySelector('input[type="file"]')
+
+			myForm.addEventListener("submit", e => {
+				e.preventDefault();
+				console.log(input.files)
+
+				formData.append("inpFile", inpFile.files[0]);
+
+				const reader = new FileReader()
+				reader.onload = function () {
+					console.log(reader.result)
+				}
+				reader.readAsText(input.files[0])
+				document.getElementById("fileDisplayer").innerHTML = reader.result;
+				document.getElementById("fileDisplayer").display = block;
+			}, false)
+	
+
+/*
+	const input = document.querySelector('input[type="file"]')
+
+	input.addEventListener('submit', function (e) {
+		console.log(input.files)
+		const reader = new FileReader()
+		reader.onload = function () {
+			console.log(reader.result)
+		}
+		reader.readAsText(input.files[0])
+		document.getElementById("fileDisplayer").innerHTML = reader.result;
+		document.getElementById("fileDisplayer").display = block;
+	}, false)
+*/
+
+
+
+/*
+function previewFile() {
+	const preview = document.querySelector('img');
+	const file = document.querySelector('input[type=file]').files[0];
+	const reader = new FileReader();
+  
+	reader.addEventListener("load", function () {
+	  // convert image file to base64 string
+	  preview.src = reader.result;
+	}, false);
+  
+	if (file) {
+	  reader.readAsDataURL(file);
+	}
+  }
+
 function updateSize() {
     let nBytes = 0,
         oFiles = this.files,
@@ -37,5 +89,4 @@ function updateSize() {
   }
 
   document.getElementById("uploadInput").addEventListener("change", updateSize, false);
-  
-
+*/

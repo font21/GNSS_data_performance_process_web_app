@@ -1,23 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <!--
-	Source:
-	https://www.tutorialrepublic.com/faq/show-hide-divs-based-on-radio-button-selection-in-jquery.php
-	Answer: Use the jQuery show() and hide() methods
+	This web app will eventually live at URL:
+	http://seirrowon.com/GNSS_data_performance_process_web_app/index.html
 
-	You can simply use the jQuery show() and hide() methods to show and hide the div elements based on the selection of radio buttons. The div boxes in the following example are hidden by default using the CSS display property which value is set to none.
-
-	Let's try this example by selecting the different radio buttons and see how it works:
+	Software Engineer:
+	David Fontenot
 -->
+
 <head>
-	<meta charset="utf-8">
-	<title>GNSS Data Performance Process Web App</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<title>GNSS Data Performance Process Web App</title>
 	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 	<script src="js/app.js"></script>
 	<link rel="preconnect" href="https://fonts.gstatic.com">
 	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet"> 
 </head>
+
 <body>
 
 	<div class="titleScreen">
@@ -36,29 +37,63 @@
 
     <div class="static box">
 	<h2><strong>Static</strong> NMEA-183 sentence processor</h2>
+	
+		<!-----   STATIC  UPLOAD  FORM   ----->
 		<form name="staticUploadForm">
 			<div>
-			  <input id="uploadInput" type="file" name="myFiles" multiple>
-			  selected files: <span id="fileNum">0</span>;
-			  total size: <span id="fileSize">0</span>
+				<input id="staticUploadInput" type="file" name="myFiles" accept=".log">
+				
+				selected files: <span id="fileNum">0</span>;
+				total size: <span id="fileSize">0</span>
 			</div>
-			<div><input type="submit" value="Send file"></div>
-		  </form>
+			<div><input type="submit" value="Upload inpFile file"></div>
+		</form>
+		<!-----   /STATIC  UPLOAD  FORM   ----->
+
+		
+		<div class="instructionsText">
+			</br>
+			</br>
+			Program 1 -- Static Test
+			</br>
+			input - Single file - GGA, VTG and GST (data types) (ignore the VTG)</br>
+			Output - a File, Each line contains True Lat, True Lon, Max Distance to following 15 minutes(900 GGA Messages), GGA Field 6 (quality Indicator), GGA Field 7 (Number of sats), GGA Field 8 (HDOP), GST Field 6(sigma Lat), GST field 7(sigma Lon)
+			</br>
+			</br>
+			Process - Start at the first GGA message - convert the GGA to true Lat and Lon, then for the following 900 GGA messages, one at a time convert them to true Lat and Lon then calculate the distance between them and the Current Lat and Lon, Keep the Maximum distance. Save the new line to a processed file then move the the next GGA message and repeat. At the end of the file you will run out of GGA messages. Just quit when there is not 15 minutes of data left.
+			</br>
+		</div>
 	</div>
 
     <div class="dynamic box">
 		<h2><strong>Dynamic</strong> NMEA-183 sentence processor</h2>
-		<form name="staticUploadForm">
+
+		<!-----   DYNAMIC  UPLOAD  FORM   ----->
+		<form name="dynamicUploadForm">
 			<div>
-			  <input id="uploadInput" type="file" name="myFiles" multiple>
-			  selected files: <span id="fileNum">0</span>;
-			  total size: <span id="fileSize">0</span>
+				<input id="dynamicUploadInput" type="file" name="staticUploadedFiles" accept=".log" multiple>
+				selected files: <span id="fileNum">0</span>;
+				total size: <span id="fileSize">0</span>
 			</div>
 			<div><input type="submit" value="Send file"></div>
-		  </form>
-	</div>
+		</form>
+		<!-----   /DYNAMIC  UPLOAD  FORM   ----->
 
-	<div class="fileDisplayer">
+		<div class="instructionsText">
+			</br>
+			</br>
+			Program 2 - Dynamic test
+			</br>
+			Input  - Two files - 1) Truth file(reference data), 2) Test file - GGA, VTG and GST (data types) (ignore the VTG)</br>
+			Output - Single file. Each line contains 1) true Lat Ref, 2)true Lon Ref, 3) Test True Lat, 4) Test True Lon, 5)  Distance between Ref and test, 6) Ref GGA Field 6 (quality Indicator), 7) Test GGA Field 7 (Number of sats), 8) ref GGA Field 8 (HDOP), 9)test GGA Field 8 (HDOP), 10) Ref GST Field 6(sigma Lat), 11) Ref GST field 7(sigma Lon), 12) Test GST Field 6(sigma Lat), 13) Test GST field 7(sigma Lon)
+			</br>
+			</br>
+			Process - Match the GGA time stamps (Field 1) convert the Truth and Test GGA messages to true Lat and Lon, then calculate the distance between them.
+			</br>
+		</div>
+	</div>
+-->
+	<div class="fileDisplayerDiv" id="fileDisplayer">
 		fileDisplayer
 	</div>
 </body>

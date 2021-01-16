@@ -58,7 +58,7 @@ a:active {
 }
 
 .static{
-	background: #2845A4;
+	background: #0984e3;
 }
 
 h2.static{
@@ -67,7 +67,7 @@ h2.static{
 }
 
 .dynamic{
-	background: #470099;
+	background: #910cc5;
  }
 
  
@@ -76,7 +76,11 @@ h2.dynamic{
 	font-size: large;
 }
 
-.fileDisplayer{
+.instructionsText{
+	padding: 20px;
+	font-family: 'Arial Narrow', sans-serif;
+}
+.fileDisplayerDiv{
 	color: #000000;
 	background: #2845A4;
 	display: none;
