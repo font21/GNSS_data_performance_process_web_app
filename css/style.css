@@ -1,9 +1,15 @@
+.titleScreen{
+	margin: auto;
+	width: 50%;
+	padding: 10px;
+	align-items: center;
+}
+
 .box{
 	color: #fff;
 	padding: 20px;
 	display: none;
 	margin-top: 20px;
 }
-.red{ background: #ff0000; }
-.green{ background: #228B22; }
-.blue{ background: #0000ff; }
+.static{ background: #ff0000; }
+.dynamic{ background: #228B22; }
