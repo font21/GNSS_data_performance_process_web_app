@@ -2,12 +2,14 @@
     console.log('JavaScript connected.');
 
 // The Document Ready Event
+/*
 $(document).ready(function(){
 
 	// Say things loaded.
 	console.log('JavaScript connected.');
 	console.log('jQuery connected.');
 });
+*/
 
 $(document).ready(function(){
     $('input[type="radio"]').click(function(){
