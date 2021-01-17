@@ -18,14 +18,49 @@ $(document).ready(function(){
 });
 
 
-const myForm = document.getElementById("staticUploadForm");
+		const myForm = document.getElementById("myForm");
+		const inpFile = document.getElementById("inpFile");
+
+		myForm.addEventListener("submit", e => {
+			e.preventDefault();
+
+			const endpoint = "upload.php";
+			const formData = new FormData();
+
+			console.log(inpFile.files);
+
+			formData.append("inpFile", inpFile.files[0]);
+
+		});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =============================
+File upload code that did not work.
+ ============================== */
+
+
+/*
+const staticUploadForm = document.getElementById("staticUploadForm");
 const input = document.querySelector('input[type="file"]')
 
-			myForm.addEventListener("submit", e => {
+			staticForm.addEventListener("staticSubmit", e => {
 				e.preventDefault();
-				console.log(input.files)
+				console.log(input.staticFile)
 
-				formData.append("inpFile", inpFile.files[0]);
+				formData.append("staticFile", staticFile.files[0]);
 
 				const reader = new FileReader()
 				reader.onload = function () {
@@ -37,7 +72,7 @@ const input = document.querySelector('input[type="file"]')
 			}, false)
 	
 
-/*
+
 	const input = document.querySelector('input[type="file"]')
 
 	input.addEventListener('submit', function (e) {

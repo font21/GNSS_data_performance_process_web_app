@@ -39,14 +39,9 @@
 	<h2><strong>Static</strong> NMEA-183 sentence processor</h2>
 	
 		<!-----   STATIC  UPLOAD  FORM   ----->
-		<form name="staticUploadForm">
-			<div>
-				<input id="staticUploadInput" type="file" name="myFiles" accept=".log">
-				
-				selected files: <span id="fileNum">0</span>;
-				total size: <span id="fileSize">0</span>
-			</div>
-			<div><input type="submit" value="Upload inpFile file"></div>
+		<form class="form" id="myForm">
+			<input type="file" id="inpFile"></br>
+			<button type="submit">Upload File</button>
 		</form>
 		<!-----   /STATIC  UPLOAD  FORM   ----->
 
@@ -68,7 +63,7 @@
     <div class="dynamic box">
 		<h2><strong>Dynamic</strong> NMEA-183 sentence processor</h2>
 
-		<!-----   DYNAMIC  UPLOAD  FORM   ----->
+		<!-----   DYNAMIC  UPLOAD  FORM   -----
 		<form name="dynamicUploadForm">
 			<div>
 				<input id="dynamicUploadInput" type="file" name="staticUploadedFiles" accept=".log" multiple>
@@ -77,7 +72,7 @@
 			</div>
 			<div><input type="submit" value="Send file"></div>
 		</form>
-		<!-----   /DYNAMIC  UPLOAD  FORM   ----->
+		!-----   /DYNAMIC  UPLOAD  FORM   ----->
 
 		<div class="instructionsText">
 			</br>
@@ -92,7 +87,7 @@
 			</br>
 		</div>
 	</div>
--->
+
 	<div class="fileDisplayerDiv" id="fileDisplayer">
 		fileDisplayer
 	</div>
