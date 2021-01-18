@@ -17,20 +17,20 @@ $(document).ready(function(){
 		});
 
 	// Static browse, upload single file, and process.
-	const myStaticForm = document.getElementById("myStaticForm");
-	const staticFile = document.getElementById("staticFile");
+		const myStaticForm = document.getElementById("myStaticForm");
+		const staticFile = document.getElementById("staticFile");
 
-	myStaticForm.addEventListener("submit", e => {
-		e.preventDefault();
+		myStaticForm.addEventListener("submit", e => {
+			e.preventDefault();
 
-		const endpoint = "upload.php";
-		const formData = new FormData();
+			const endpoint = "upload.php";
+			const formData = new FormData();
 
-		console.log(staticFile.files);
+			console.log(staticFile.files);
 
-		formData.append("staticFile", staticFile.files[0]);
+			formData.append("staticFile", staticFile.files[0]);
 
-	});
+		});
 
 	// Dynamic browse, upload multiple files, and process.
 

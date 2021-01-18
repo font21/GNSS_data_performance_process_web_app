@@ -36,7 +36,7 @@
 	</div>
 
     <div class="static box">
-	<h2><strong>Static</strong> NMEA-183 sentence processor</h2>
+	<h2><strong>Static</strong> NMEA-183 Sentence Displayer</h2>
 	
 		<!-----   STATIC  UPLOAD  FORM   ----->
 		<form class="form" id="myStaticForm">
@@ -61,25 +61,30 @@
 	</div>
 
     <div class="dynamic box">
-		<h2><strong>Dynamic</strong> NMEA-183 sentence processor</h2>
+		<h2><strong>Dynamic</strong> NMEA-183 sentence Comparison</h2>
 
-		<!-----   DYNAMIC  UPLOAD  FORM   -----
-		<form name="dynamicUploadForm">
-			<div>
+		<!-----   DYNAMIC  UPLOAD  FORMs   ----->
+		<form name="DynamicReferenceForm"></form>
+			<div class="form" id="myDynamicReferenceForm">
 				<input id="dynamicUploadInput" type="file" name="staticUploadedFiles" accept=".log" multiple>
 				selected files: <span id="fileNum">0</span>;
 				total size: <span id="fileSize">0</span>
 			</div>
 			<div><input type="submit" value="Send file"></div>
 		</form>
-		!-----   /DYNAMIC  UPLOAD  FORM   ----->
+		
+		<form name="DynamicTestForm">
+			<div></div>
+		</form>
+		<input type="submit" value="Upload and Process">
+		<!-----   /DYNAMIC  UPLOAD  FORMs   ----->
 
 		<div class="instructionsText">
 			</br>
 			</br>
 			Program 2 - Dynamic test
 			</br>
-			Input  - Two files - 1) Truth file(reference data), 2) Test file - GGA, VTG and GST (data types) (ignore the VTG)</br>
+			Input - Two files - 1) Truth file(reference data), 2) Test file - GGA, VTG and GST (data types) (ignore the VTG)</br>
 			Output - Single file. Each line contains 1) true Lat Ref, 2)true Lon Ref, 3) Test True Lat, 4) Test True Lon, 5)  Distance between Ref and test, 6) Ref GGA Field 6 (quality Indicator), 7) Test GGA Field 7 (Number of sats), 8) ref GGA Field 8 (HDOP), 9)test GGA Field 8 (HDOP), 10) Ref GST Field 6(sigma Lat), 11) Ref GST field 7(sigma Lon), 12) Test GST Field 6(sigma Lat), 13) Test GST field 7(sigma Lon)
 			</br>
 			</br>
