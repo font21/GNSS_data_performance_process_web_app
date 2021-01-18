@@ -5,32 +5,37 @@
 $(document).ready(function(){
 
 	// Message if jQuery is connected and running
-	console.log('jQuery connected.');
+		console.log('jQuery connected.');
 
-    $('input[type="radio"]').click(function(){
-        var inputValue = $(this).attr("value");
-        var targetBox = $("." + inputValue);
-        $(".box").not(targetBox).hide();
-        $(targetBox).show();
-    });
-
-
-
-		const myForm = document.getElementById("myForm");
-		const inpFile = document.getElementById("inpFile");
-
-		myForm.addEventListener("submit", e => {
-			e.preventDefault();
-
-			const endpoint = "upload.php";
-			const formData = new FormData();
-
-			console.log(inpFile.files);
-
-			formData.append("inpFile", inpFile.files[0]);
-
+	// RADIO BUTTONs
+	// to select static (single file upload) or Dynamic (multiple file upload).
+		$('input[type="radio"]').click(function(){
+			var inputValue = $(this).attr("value");
+			var targetBox = $("." + inputValue);
+			$(".box").not(targetBox).hide();
+			$(targetBox).show();
 		});
+
+	// Static browse, upload single file, and process.
+	const myStaticForm = document.getElementById("myStaticForm");
+	const staticFile = document.getElementById("staticFile");
+
+	myStaticForm.addEventListener("submit", e => {
+		e.preventDefault();
+
+		const endpoint = "upload.php";
+		const formData = new FormData();
+
+		console.log(staticFile.files);
+
+		formData.append("staticFile", staticFile.files[0]);
+
 	});
+
+	// Dynamic browse, upload multiple files, and process.
+
+
+});
 
 
 
