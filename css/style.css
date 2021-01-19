@@ -66,6 +66,21 @@ h2.static{
 	font-size: large;
 }
 
+#staticProcessButton {
+	border: 5px solid;
+	border-color: #808080;
+	background: #910cc5;
+	color: #fff;
+	font-family: calibri;
+	display: block;
+	width: 240px;
+	font-size: 18px;
+	text-transform: uppercase;
+	padding: 10px;
+	text-align: center;
+	margin: 20px auto;
+	cursor: pointer;
+}
 .dynamic{
 	background: #910cc5;
  }
@@ -111,8 +126,8 @@ h2.dynamic{
 	color: #fff;
 	font-family: calibri;
 	display: block;
-	width: 140px;
-	font-size: 24px;
+	width: 240px;
+	font-size: 18px;
 	text-transform: uppercase;
 	padding: 10px;
 	text-align: center;

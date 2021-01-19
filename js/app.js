@@ -1,25 +1,8 @@
 // Message if JavaScript is connected and running
-    console.log('JavaScript connected.');
+console.log('JavaScript connected.');
 
-
-/* Page load timers
-https://gist.github.com/prof3ssorSt3v3/5f976023977a299d80a03367f2352ef2
-load VS DOMContentLoaded Event
-https://www.youtube.com/watch?v=8rc0zaTn2ew&ab_channel=SteveGriffith
-*/
-	window.addEventListener('load', (ev)=>{
-		console.log(ev.type);
-		let endTime = performance.now();
-		let diff = endTime - startTime;
-		console.log(ev.type, diff);
-	});
-
-	document.addEventListener('DOMContentLoaded', (ev)=>{
-		console.log(ev.type);
-		let endTime = performance.now();
-		let diff = endTime - startTime;
-		console.log(ev.type, diff);
-	})
+// Page load timers : set
+const startTime = performance.now();
 
 
 // The Document Ready Event
@@ -60,6 +43,7 @@ https://www.youtube.com/watch?v=8rc0zaTn2ew&ab_channel=SteveGriffith
 
 
 
+
 	/* ======================================
 		Static
 		Static browse, upload single file, and process.
@@ -78,7 +62,7 @@ https://www.youtube.com/watch?v=8rc0zaTn2ew&ab_channel=SteveGriffith
 				formData.append("staticFile", staticFile.files[0]);	
 
 		});
-
+	});
 
 /* -- Split-by-line code breaks DIVs displayed by radio button selector:
 
@@ -96,7 +80,7 @@ https://www.youtube.com/watch?v=8rc0zaTn2ew&ab_channel=SteveGriffith
 	// Dynamic browse, upload multiple files, and process.
 
 
-});
+
 
 
 
@@ -189,3 +173,27 @@ function updateSize() {
 
   document.getElementById("uploadInput").addEventListener("change", updateSize, false);
 */
+
+
+
+
+
+
+/* Page load timers : print times
+https://gist.github.com/prof3ssorSt3v3/5f976023977a299d80a03367f2352ef2
+load VS DOMContentLoaded Event
+https://www.youtube.com/watch?v=8rc0zaTn2ew&ab_channel=SteveGriffith
+*/
+	window.addEventListener('load', (ev)=>{
+		console.log(ev.type);
+		let endTime = performance.now();
+		let diff = endTime - startTime;
+		console.log(ev.type + " is " + diff + " milliseconds");
+	});
+
+	document.addEventListener('DOMContentLoaded', (ev)=>{
+		console.log(ev.type);
+		let endTime = performance.now();
+		let diff = endTime - startTime;
+		console.log(ev.type + " is " + diff + " milliseconds");
+	});
