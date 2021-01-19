@@ -1,13 +1,36 @@
 // Message if JavaScript is connected and running
     console.log('JavaScript connected.');
 
+
+/* Page load timers
+https://gist.github.com/prof3ssorSt3v3/5f976023977a299d80a03367f2352ef2
+load VS DOMContentLoaded Event
+https://www.youtube.com/watch?v=8rc0zaTn2ew&ab_channel=SteveGriffith
+*/
+	window.addEventListener('load', (ev)=>{
+		console.log(ev.type);
+		let endTime = performance.now();
+		let diff = endTime - startTime;
+		console.log(ev.type, diff);
+	});
+
+	document.addEventListener('DOMContentLoaded', (ev)=>{
+		console.log(ev.type);
+		let endTime = performance.now();
+		let diff = endTime - startTime;
+		console.log(ev.type, diff);
+	})
+
+
 // The Document Ready Event
-$(document).ready(function(){
+	$(document).ready(function(){
 
 	// Message if jQuery is connected and running
 		console.log('jQuery connected.');
 
-	// RADIO BUTTONs
+	/* ======================================
+		RADIO BUTTONs
+	=======================================*/
 	// to select static (single file upload) or Dynamic (multiple file upload).
 		$('input[type="radio"]').click(function(){
 			var inputValue = $(this).attr("value");
@@ -16,22 +39,60 @@ $(document).ready(function(){
 			$(targetBox).show();
 		});
 
-	// Static browse, upload single file, and process.
+/* Show More Buttons
+	https://www.youtube.com/watch?v=RVA4HoEE_q8&ab_channel=TheNetNinja
+*/
+	var dynamicContentText = document.getElementById("dynamicContentText");
+	var dynamicShowMoreButton = document.getElementById("dynamicShowMoreButton");
+
+	dynamicShowMoreButton.onclick = function(){
+		if(dynamicContentText.className == "open"){
+			// shrink the box
+			dynamicContentText.className = "";
+			dynamicShowMoreButton.innerHTML = "Show More";
+		} else {
+			// expand the box
+			dynamicContentText.className = "open";
+			dynamicShowMoreButton.innerHTML = "Show Less";
+		}
+	};
+
+
+
+
+	/* ======================================
+		Static
+		Static browse, upload single file, and process.
+	 ===================================== */
+
 		const myStaticForm = document.getElementById("myStaticForm");
 		const staticFile = document.getElementById("staticFile");
 
 		myStaticForm.addEventListener("submit", e => {
-			e.preventDefault();
+			// Prevent page reload
+				e.preventDefault();
 
-			const endpoint = "upload.php";
-			const formData = new FormData();
-
-			console.log(staticFile.files);
-
-			formData.append("staticFile", staticFile.files[0]);
+			// const endpoint = "upload.php";
+				const formData = new FormData();
+				console.log(staticFile.files);
+				formData.append("staticFile", staticFile.files[0]);	
 
 		});
 
+
+/* -- Split-by-line code breaks DIVs displayed by radio button selector:
+
+	// File Reader and split by line
+	const reader = new.FileReader();
+	const lines = reader.result.split("\n");
+	console.log(lines[0])
+	console.log(lines[1])
+	console.log(lines[2])
+*/
+
+	/* ======================================
+		Dynamic
+	====================================== */
 	// Dynamic browse, upload multiple files, and process.
 
 
