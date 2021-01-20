@@ -6,51 +6,44 @@ input.addEventListener('change', function (e) {
 		const lines = reader.result.split('\n').map(function (line) {
 			return line.split(',')
 		})
-		console.log(lines)
+		// console.log(lines)
+		console.log(lines[0][0]);
 
 		// Reassign lines to sentenceArray
 		const sentenceArray = lines;
 
-		// MAJOR FIRST OBJECT Processing
+		// 
 		// For each object in the Array: slice out the talker and sentence type. Then, stick those back in.
-		sentenceArray.forEach(function(sent){ 
-			console.log(sent);		
-
+		sentenceArray.forEach(function(sentencei){
+			// DeBug: Print sentencei position
+			console.log("sentencei[0] is " + sentencei[0]);
+			sentenceArray[sentencei].forEach(function(sentenceii){
+				
 		// Separate the first value of sentenceArray into talkerId and sentenceId values
-			const talkerId = String(sent.slice(1, 3));
-			console.log("talkerId: " + talkerId);
-			const sentenceType = String(sent.slice(3));
-			console.log("sentenceType: " + sentenceType);
+			
+			const talkerId = sentenceArray[sentencei][sentenceii].slice(1, 3);
+			// console.log("talkerId: " + talkerId);
+			const sentenceType = sentenceArray[sentencei][sentenceii].slice(3);
+			// console.log("sentenceType: " + sentenceType);
 
-			// Type debug stuff because it keeps grabbing the second object in the string and using that.
-				if (typeof talkerId === 'string') {
-					console.log("talkerId: " + talkerId + " is a string.");
-				} else {
-					console.log("talkerId: " + talkerId + " taint a string.");
-				};
 
-				if (typeof sentenceType === 'string') {
-					console.log("sentenceType: " + sentenceType + " is a string.");
-				} else {
-					console.log("sentenceType: " + sentenceType + " taint a string.");
-				};
 
 		// and stick them at the front of sentenceArray
-			sent.unshift({ talkerId }, { sentenceType });
+		sentenceii[sentencei].unshift({ talkerId }, { sentenceType });
 		
 		// Remove the last element of the array.
-			const lastValue = sent.pop();
+			let lastValue = sentenceii[sentencei].pop();
 		
 		// Print the values to the command line for debug.
 			console.log('lastValue: ' + lastValue);
 			console.log('lastElement Length: ' + lastElementLength);
-			var lastElementLength = sent.length;
+			var lastElementLength = sentenceii.length;
 		
 		// Separate last two elements of the array as second to last and checksum values:
-			const lastElementLengthIsh = lastElementLength - 2;
-			const penultimateElementStop = lastElementLength - 3;
-			const penultimateID = lastValue.slice(0, penultimateElementStop);
-			const checksum = lastValue.slice(4);
+			let lastElementLengthIsh = lastElementLength - 2;
+			let penultimateElementStop = lastElementLength - 3;
+			let penultimateID = lastValue.slice(0, penultimateElementStop);
+			let checksum = lastValue.slice(4);
 		
 		// Print the values to the command line for debug.
 			console.log('penultimateID: ' + penultimateID);
@@ -226,12 +219,14 @@ input.addEventListener('change', function (e) {
 					(arr, key, index) => [...arr, { [key]: values[index] }],
 					[]
 				); //  returns [{talkerId: '$GN'},{sentenceType: 'ZDA'},{utc: '...]
-		
+			
 		}
 		else {
 			console.log('Sentence type failed.');
 		}
-	// closes the for each in Array loop	
+		// closes the for each sentenceii in Array loop.
+		});
+	// closes the for each sentencei in Array loop.
 	});
 
 		// Collapse the array and prepare to send out by assigning value to msg.payload
@@ -250,7 +245,7 @@ input.addEventListener('change', function (e) {
 			document.body.append(div);
 
 
-	
+
 	}
 	reader.readAsText(input.files[0])
 }, false)
