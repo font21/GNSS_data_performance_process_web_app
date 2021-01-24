@@ -3,28 +3,71 @@ input.addEventListener('change', function (e) {
 	console.log(input.files)
 	const reader = new FileReader()
 	reader.onload = function () {	
-		const lines = reader.result.split('\n').map(function (line) {
+		let lines = reader.result.split('\n').map(function (line) {
 			return line.split(',')
 		})
-		// console.log(lines)
-		console.log(lines[0][0]);
 
-		// Reassign lines to sentenceArray
-		const sentenceArray = lines;
+		// Reassign lines to sentenceArray for preservation
+		let sentenceArray = lines;
+
+		// console.log(sentenceArray)
+		console.log('sentenceArray[0] = ' + sentenceArray[1]);
+		console.log('sentenceArray[0][0] = ' + sentenceArray[1][0]);
+		console.log('sentenceArray[0][0][0] = ' + sentenceArray[1][0][0]);
+
+		console.log('sentenceArray[1] = ' + sentenceArray[1]);
+		console.log('sentenceArray[1][0] = ' + sentenceArray[1][0]);
+		console.log('sentenceArray[1][0][0] = ' + sentenceArray[1][0][0]);
 
 		// 
 		// For each object in the Array: slice out the talker and sentence type. Then, stick those back in.
-		sentenceArray.forEach(function(sentencei){
+		sentenceArray[1].forEach(function(sentencei){
+			
 			// DeBug: Print sentencei position
-			console.log("sentencei[0] is " + sentencei[0]);
-			sentenceArray[sentencei].forEach(function(sentenceii){
+				console.log('Debug: forEach(sentencei)')
+
+				console.log(`Debug: sentenceArray[${sentencei}] = ${sentenceArray[sentencei]}`);
+				console.log(`Debug: sentenceArray[${sentencei}] = ${sentenceArray[1][sentencei]}`);
+				console.log(`Debug: sentenceArray[${sentencei}] = ${sentenceArray[0][sentencei]}`);
+
+				console.log('Debug: sentenceArray[' + sentencei + '] = ' + sentenceArray[sentencei]);
+				console.log(`Debug: sentenceArray[0][${sentencei}] = ${sentenceArray[0][sentencei]}`);
+				console.log('Debug: sentenceArray[1][' + sentencei + '] = ' + sentenceArray[1][sentencei]);
 				
+				console.log('Debug: sentenceArray[' + sentencei + '] = ' + sentenceArray[sentencei]);
+				// console.log('Debug: sentenceArray[' + sentencei + '][0] = ' + sentenceArray[sentencei][0]);
+				// console.log('Debug: sentenceArray[' + sentencei + '][1] = ' + sentenceArray[sentencei][1]);
+
+			// sentenceArray[1][sentencei].forEach(function(sentenceii){
+/*
+				console.log('Debug: sentenceArray.forEach(function(sentencei)')
+
+				console.log('Debug: sentenceArray[' + sentencei + '] = ' + sentenceArray[sentencei]);
+				console.log('Debug: sentenceArray[0][' + sentencei + '] = ' + sentenceArray[0][sentencei]);
+				console.log('Debug: sentenceArray[1][' + sentencei + '] = ' + sentenceArray[1][sentencei]);
+
+				console.log('Debug: sentenceArray[' + sentencei + '] = ' + sentenceArray[sentencei]);
+				console.log('Debug: sentenceArray[0][' + sentencei + '] = ' + sentenceArray[0][sentencei]);
+				console.log('Debug: sentenceArray[1][' + sentencei + '] = ' + sentenceArray[1][sentencei]);
+				
+				console.log('Debug: sentenceArray[' + sentencei + '] = ' + sentenceArray[sentencei]);
+				console.log('Debug: sentenceArray[' + sentencei + '][0] = ' + sentenceArray[sentencei][0]);
+				console.log('Debug: sentenceArray[' + sentencei + '][1] = ' + sentenceArray[sentencei][1]);
+*/
+
+/*
+				console.log('Debug: sentenceArray[' + sentencei + '][' + sentenceii + '] = ' + sentenceArray[sentencei][sentenceii]);
+				console.log('Debug: sentenceArray[0][' + sentencei + '][' + sentenceii + '] = ' + sentenceArray[sentencei][sentenceii]);
+				console.log('Debug: sentenceArray[1][' + sentencei + '][' + sentenceii + '] = ' + sentenceArray[sentencei][sentenceii]);
+				console.log('Debug: sentenceArray[0][0][0] = ' + sentenceArray[0][0][0]);
+*/
+
 		// Separate the first value of sentenceArray into talkerId and sentenceId values
 			
-			const talkerId = sentenceArray[sentencei][sentenceii].slice(1, 3);
-			// console.log("talkerId: " + talkerId);
-			const sentenceType = sentenceArray[sentencei][sentenceii].slice(3);
-			// console.log("sentenceType: " + sentenceType);
+			let talkerId = sentenceArray[0][sentencei].slice(1, 3);
+			console.log("talkerId: " + talkerId);
+			let sentenceType = sentenceArray[0][sentencei].slice(3);
+			console.log("sentenceType: " + sentenceType);
 
 
 
@@ -37,7 +80,7 @@ input.addEventListener('change', function (e) {
 		// Print the values to the command line for debug.
 			console.log('lastValue: ' + lastValue);
 			console.log('lastElement Length: ' + lastElementLength);
-			var lastElementLength = sentenceii.length;
+			let lastElementLength = sentenceii.length;
 		
 		// Separate last two elements of the array as second to last and checksum values:
 			let lastElementLengthIsh = lastElementLength - 2;
@@ -225,7 +268,7 @@ input.addEventListener('change', function (e) {
 			console.log('Sentence type failed.');
 		}
 		// closes the for each sentenceii in Array loop.
-		});
+		// });
 	// closes the for each sentencei in Array loop.
 	});
 
