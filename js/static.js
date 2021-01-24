@@ -1,78 +1,48 @@
-const input = document.querySelector('input[type="file"]')
-input.addEventListener('change', function (e) {
-	console.log(input.files)
-	const reader = new FileReader()
-	reader.onload = function () {	
-		let lines = reader.result.split('\n').map(function (line) {
-			return line.split(',')
-		})
+/* ==========================================================
+#															#
+#	Define Functions										#
+#															#
+========================================================== */
 
-		// Reassign lines to sentenceArray for preservation
-		let sentenceArray = lines;
+function sentenceParserFunction (inputBlock) {
 
-		// console.log(sentenceArray)
-		console.log('sentenceArray[0] = ' + sentenceArray[1]);
-		console.log('sentenceArray[0][0] = ' + sentenceArray[1][0]);
+	// Reassign inputBlock to sentenceArray for preservation
+		let sentenceArray = inputBlock;
+
+	// Foor loop to itterate through the array
+		for (let indexi = 0; i > sentenceArray.length; i--) {
+
+	sentenceArray[indexi].forEach(function(elementii, indexii, arrayii) {
+				
+	// console.log(sentenceArray)
+		console.log('sentenceArray[0] = ' + sentenceArray[indexi]);
+		console.log('sentenceArray[0][0] = ' + sentenceArray[indexi][indexii]);
 		console.log('sentenceArray[0][0][0] = ' + sentenceArray[1][0][0]);
 
 		console.log('sentenceArray[1] = ' + sentenceArray[1]);
 		console.log('sentenceArray[1][0] = ' + sentenceArray[1][0]);
 		console.log('sentenceArray[1][0][0] = ' + sentenceArray[1][0][0]);
 
-		// 
+
 		// For each object in the Array: slice out the talker and sentence type. Then, stick those back in.
-		sentenceArray[1].forEach(function(sentencei){
+		// sentenceArray[1].forEach(function(sentencei){
+
 			
-			// DeBug: Print sentencei position
-				console.log('Debug: forEach(sentencei)')
+		// DeBug: Print sentencei position
+			console.log('Debug: forEach(sentencei)')
 
-				console.log(`Debug: sentenceArray[${sentencei}] = ${sentenceArray[sentencei]}`);
-				console.log(`Debug: sentenceArray[${sentencei}] = ${sentenceArray[1][sentencei]}`);
-				console.log(`Debug: sentenceArray[${sentencei}] = ${sentenceArray[0][sentencei]}`);
-
-				console.log('Debug: sentenceArray[' + sentencei + '] = ' + sentenceArray[sentencei]);
-				console.log(`Debug: sentenceArray[0][${sentencei}] = ${sentenceArray[0][sentencei]}`);
-				console.log('Debug: sentenceArray[1][' + sentencei + '] = ' + sentenceArray[1][sentencei]);
-				
-				console.log('Debug: sentenceArray[' + sentencei + '] = ' + sentenceArray[sentencei]);
-				// console.log('Debug: sentenceArray[' + sentencei + '][0] = ' + sentenceArray[sentencei][0]);
-				// console.log('Debug: sentenceArray[' + sentencei + '][1] = ' + sentenceArray[sentencei][1]);
-
-			// sentenceArray[1][sentencei].forEach(function(sentenceii){
-/*
-				console.log('Debug: sentenceArray.forEach(function(sentencei)')
-
-				console.log('Debug: sentenceArray[' + sentencei + '] = ' + sentenceArray[sentencei]);
-				console.log('Debug: sentenceArray[0][' + sentencei + '] = ' + sentenceArray[0][sentencei]);
-				console.log('Debug: sentenceArray[1][' + sentencei + '] = ' + sentenceArray[1][sentencei]);
-
-				console.log('Debug: sentenceArray[' + sentencei + '] = ' + sentenceArray[sentencei]);
-				console.log('Debug: sentenceArray[0][' + sentencei + '] = ' + sentenceArray[0][sentencei]);
-				console.log('Debug: sentenceArray[1][' + sentencei + '] = ' + sentenceArray[1][sentencei]);
-				
-				console.log('Debug: sentenceArray[' + sentencei + '] = ' + sentenceArray[sentencei]);
-				console.log('Debug: sentenceArray[' + sentencei + '][0] = ' + sentenceArray[sentencei][0]);
-				console.log('Debug: sentenceArray[' + sentencei + '][1] = ' + sentenceArray[sentencei][1]);
-*/
-
-/*
-				console.log('Debug: sentenceArray[' + sentencei + '][' + sentenceii + '] = ' + sentenceArray[sentencei][sentenceii]);
-				console.log('Debug: sentenceArray[0][' + sentencei + '][' + sentenceii + '] = ' + sentenceArray[sentencei][sentenceii]);
-				console.log('Debug: sentenceArray[1][' + sentencei + '][' + sentenceii + '] = ' + sentenceArray[sentencei][sentenceii]);
-				console.log('Debug: sentenceArray[0][0][0] = ' + sentenceArray[0][0][0]);
-*/
+			console.log(`Debug: sentenceArray[${indexi}] = ${sentenceArray[elementi]}`);
+			console.log(`Debug: sentenceArray[${indexi}][${indexii}] = ` + sentenceArray[indexi][indexii]);
 
 		// Separate the first value of sentenceArray into talkerId and sentenceId values
 			
-			let talkerId = sentenceArray[0][sentencei].slice(1, 3);
+			let talkerId = sentenceArray[indexi][indexii].slice(1, 3);
 			console.log("talkerId: " + talkerId);
-			let sentenceType = sentenceArray[0][sentencei].slice(3);
+			let sentenceType = sentenceArray[indexi][indexii].slice(3);
 			console.log("sentenceType: " + sentenceType);
 
-
-
 		// and stick them at the front of sentenceArray
-		sentenceii[sentencei].unshift({ talkerId }, { sentenceType });
+			sentenceii[sentencei].unshift({ talkerId }, { sentenceType });
 		
 		// Remove the last element of the array.
 			let lastValue = sentenceii[sentencei].pop();
@@ -268,15 +238,33 @@ input.addEventListener('change', function (e) {
 			console.log('Sentence type failed.');
 		}
 		// closes the for each sentenceii in Array loop.
-		// });
+	)};
 	// closes the for each sentencei in Array loop.
-	});
+		};
 
 		// Collapse the array and prepare to send out by assigning value to msg.payload
 			const mergedPayload = sentenceArray.reduce((r,c) => ({...r,...c}), {})
-			
-			
 
+// };
+
+
+/* ==========================================================
+#															#
+#	End Defined functions and Begin Page Load				#
+#															#
+========================================================== */
+
+
+const input = document.querySelector('input[type="file"]')
+
+input.addEventListener('change', function (e) {
+	console.log(input.files)
+	const reader = new FileReader()
+	reader.onload = function () {
+		let lines = reader.result.split('\n').map(function (line) {
+			return line.split(',')
+		})
+		sentenceParserFunction(lines);
 
 		// Print everything or something
 			console.log(mergedPayload);
