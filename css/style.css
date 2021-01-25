@@ -2,6 +2,15 @@ body{
 	font-family: 'Open Sans', sans-serif;
 }
 
+.titleScreen{
+	margin: auto;
+	width: 50%;
+	padding: 10px;
+	align-items: center;
+	text-align: center;
+	color: #000000;
+}
+
 /* links */
 a {
 	color: #000000;
@@ -32,14 +41,7 @@ a:active {
 	text-decoration: none;
 } 
 
-.titleScreen{
-	margin: auto;
-	width: 50%;
-	padding: 10px;
-	align-items: center;
-	text-align: center;
-	color: #000000;
-}
+
 
 .choiceBox{
 	align-items: left;
@@ -139,4 +141,39 @@ h2.dynamic{
 	color: #000000;
 	background: #2845A4;
 	display: none;
+}
+
+/* =========================
+	Begin Static.html
+   ====================== */
+.testData{
+	float: right;
+	padding: 40px;
+	color: #000000;
+	background: #5769a3;
+	margin: 40px 40px 40px 40px auto;
+}
+
+/* unvisited link */
+a.testData {
+	color: #a56565;
+	text-decoration: underline;
+}
+
+ /* unvisited link */
+ a.testData:link {
+	color: #a56565;
+	text-decoration: underline;
+}
+  
+/* visited link */
+a.testData:visited {
+	color: #a56565;
+	text-decoration: underline;
+}
+  
+/* mouse over link */
+a.testData:hover {
+	color: #000000;
+	text-decoration: underline;
 }
