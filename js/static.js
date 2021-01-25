@@ -4,25 +4,26 @@
 #															#
 ========================================================== */
 
+// define global variables by using var at creation
+	var mergedPayload = "Nothing added to the mergedPayload varibale.";
+	var sentenceArray = [];
+
 function sentenceParserFunction (inputBlock) {
 
 	// Reassign inputBlock to sentenceArray for preservation
-		let sentenceArray = inputBlock;
+		sentenceArray = inputBlock;
 
 	// Foor loop to itterate through the array
-		for (let indexi = 0; i > sentenceArray.length; i--) {
+		for (let indexi = 0; indexi < sentenceArray.length; indexi++) {
 
-	sentenceArray[indexi].forEach(function(elementii, indexii, arrayii) {
+			sentenceArray[indexi].forEach(function(elementii, indexii, arrayii) {
 				
 	// console.log(sentenceArray)
 		console.log('sentenceArray[0] = ' + sentenceArray[indexi]);
 		console.log('sentenceArray[0][0] = ' + sentenceArray[indexi][indexii]);
-		console.log('sentenceArray[0][0][0] = ' + sentenceArray[1][0][0]);
 
 		console.log('sentenceArray[1] = ' + sentenceArray[1]);
 		console.log('sentenceArray[1][0] = ' + sentenceArray[1][0]);
-		console.log('sentenceArray[1][0][0] = ' + sentenceArray[1][0][0]);
-
 
 		// For each object in the Array: slice out the talker and sentence type. Then, stick those back in.
 		// sentenceArray[1].forEach(function(sentencei){
@@ -31,7 +32,7 @@ function sentenceParserFunction (inputBlock) {
 		// DeBug: Print sentencei position
 			console.log('Debug: forEach(sentencei)')
 
-			console.log(`Debug: sentenceArray[${indexi}] = ${sentenceArray[elementi]}`);
+			console.log(`Debug: sentenceArray[${indexi}] = ${sentenceArray[indexi]}`);
 			console.log(`Debug: sentenceArray[${indexi}][${indexii}] = ` + sentenceArray[indexi][indexii]);
 
 		// Separate the first value of sentenceArray into talkerId and sentenceId values
@@ -42,15 +43,15 @@ function sentenceParserFunction (inputBlock) {
 			console.log("sentenceType: " + sentenceType);
 
 		// and stick them at the front of sentenceArray
-			sentenceii[sentencei].unshift({ talkerId }, { sentenceType });
+			sentenceArray[indexi].unshift({ talkerId }, { sentenceType });
 		
 		// Remove the last element of the array.
-			let lastValue = sentenceii[sentencei].pop();
+			let lastValue = sentenceArray[indexi].pop();
 		
 		// Print the values to the command line for debug.
+			let lastElementLength = indexii.length;
 			console.log('lastValue: ' + lastValue);
 			console.log('lastElement Length: ' + lastElementLength);
-			let lastElementLength = sentenceii.length;
 		
 		// Separate last two elements of the array as second to last and checksum values:
 			let lastElementLengthIsh = lastElementLength - 2;
@@ -168,7 +169,7 @@ function sentenceParserFunction (inputBlock) {
 		
 			// Merge Key-Value pairs as defined above
 			// https://stackoverflow.com/a/50985915/13849868
-				const sentenceArray = cfgKeys.reduce(
+				sentenceArray = cfgKeys.reduce(
 					(arr, key, index) => [...arr, { [key]: values[index] }],
 					[]
 				); //  returns [{talkerId: '$GN'},{sentenceType: 'GGA'},{utcFromDevice: '...]
@@ -181,7 +182,7 @@ function sentenceParserFunction (inputBlock) {
 		
 			// Merge Key-Value pairs as defined above
 			// https://stackoverflow.com/a/50985915/13849868
-				const sentenceArray = ggaKeys.reduce(
+				sentenceArray = ggaKeys.reduce(
 					(arr, key, index) => [...arr, { [key]: values[index] }],
 					[]
 				); //  returns [{talkerId: '$GN'},{sentenceType: 'GGA'},{utcFromDevice: '...]
@@ -202,7 +203,7 @@ function sentenceParserFunction (inputBlock) {
 		
 			// Merge Key-Value pairs as defined above
 			// https://stackoverflow.com/a/50985915/13849868
-				const sentenceArray = gstKeys.reduce(
+				sentenceArray = gstKeys.reduce(
 					(arr, key, index) => [...arr, { [key]: values[index] }],
 					[]
 				); //  returns [{talkerId: '$GN'},{sentenceType: 'GST'},{TcOfAssociatedGgaFix: '...]
@@ -215,7 +216,7 @@ function sentenceParserFunction (inputBlock) {
 		
 			// Merge Key-Value pairs as defined above
 			// https://stackoverflow.com/a/50985915/13849868
-				const sentenceArray = vtgKeys.reduce(
+				sentenceArray = vtgKeys.reduce(
 					(arr, key, index) => [...arr, { [key]: values[index] }],
 					[]
 				); //  returns [{talkerId: '$GN'},{sentenceType: 'VTG'},{CourseOverGroundDegreesTrue: '...]
@@ -228,7 +229,7 @@ function sentenceParserFunction (inputBlock) {
 		
 			// Merge Key-Value pairs as defined above
 			// https://stackoverflow.com/a/50985915/13849868
-				const sentenceArray = zdaKeys.reduce(
+				sentenceArray = zdaKeys.reduce(
 					(arr, key, index) => [...arr, { [key]: values[index] }],
 					[]
 				); //  returns [{talkerId: '$GN'},{sentenceType: 'ZDA'},{utc: '...]
@@ -237,15 +238,15 @@ function sentenceParserFunction (inputBlock) {
 		else {
 			console.log('Sentence type failed.');
 		}
+
 		// closes the for each sentenceii in Array loop.
-	)};
+		}
+		)};
 	// closes the for each sentencei in Array loop.
 		};
 
-		// Collapse the array and prepare to send out by assigning value to msg.payload
-			const mergedPayload = sentenceArray.reduce((r,c) => ({...r,...c}), {})
-
-// };
+// Collapse the array and prepare to send out by assigning value to msg.payload
+	mergedPayload = sentenceArray.reduce((r,c) => ({...r,...c}), {})
 
 
 /* ==========================================================
@@ -274,8 +275,6 @@ input.addEventListener('change', function (e) {
 	
 			div.innerHTML = mergedPayload;
 			document.body.append(div);
-
-
 
 	}
 	reader.readAsText(input.files[0])
