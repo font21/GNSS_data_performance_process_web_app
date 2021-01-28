@@ -13,13 +13,13 @@ var sentenceArray = [];
 #															#
 ========================================================== */
 
+// Merge Key-Value pairs as defined
+// https://stackoverflow.com/a/50985915/13849868
 function keysReduce (nmeakey, nmeaInputArray){
-	// Merge Key-Value pairs as defined above
-	// https://stackoverflow.com/a/50985915/13849868
 	nmeaInputArray = nmeakey.reduce((obj, key, index) => (
 		{ ...obj, [key]: nmeaInputArray[index] }
 	), {})
-	//  returns [{talkerId: '$GN', sentenceType: 'GGA', utcFromDevice: '...}]
+	
 	console.log('testReduce: ', nmeaInputArray )
 };
 
@@ -99,7 +99,7 @@ for (let indexi = 0; indexi < sentenceArray.length ; indexi++) {
 				"geoidalSeparation",
 				"geoidalSeparationUnit",
 				"ageOfData",
-				"Reference station ID", // this key was missing......
+				"Reference station ID",
 				"checksum",
 			];
 				
@@ -150,19 +150,16 @@ for (let indexi = 0; indexi < sentenceArray.length ; indexi++) {
 			if ( sentenceArray[indexi][1] == "CFG" ) {
 				// Do CFG things
 					console.log('Doing CFG things.');
-				// Apply NMEA-a83 Keys to each array element
+				// Merge NMEA-183 Key-Value pairs as defined above in to each array element
 					keysReduce (cfgKeys, sentenceArray[indexi]);
+				//  returns [{talkerId: '$GN', sentenceType: 'CFG'...}]
+					
 			} 
 			else if ( sentenceArray[indexi][1] == "GGA" ) {	
 				// Do GGA things
 					console.log('Doing GGA things.');
 					console.log(sentenceArray[indexi].length, ggaKeys.length)
-			
-				// Merge Key-Value pairs as defined above
-				// https://stackoverflow.com/a/50985915/13849868
-				sentenceArray[indexi] = ggaKeys.reduce((obj, key, index) => (
-					{ ...obj, [key]: sentenceArray[indexi][index] }	
-				), {})
+
 				//  returns [{talkerId: '$GN', sentenceType: 'GGA', utcFromDevice: '...}]
 				console.log('testReduce', sentenceArray[indexi] )
 
@@ -173,17 +170,18 @@ for (let indexi = 0; indexi < sentenceArray.length ; indexi++) {
 					if(sentenceArray[indexi].longitudeDirection === 'W') {
 						sentenceArray[indexi].longitude = '-'+ sentenceArray[indexi].longitude
 					}
+				
+				// Merge NMEA-183 Key-Value pairs as defined above in to each array element
+					keysReduce (ggaKeys, sentenceArray[indexi]);
 			
 			}
 			else if ( sentenceArray[indexi][1] == "GST" ) {
 				// Do GST things
 					console.log('Doing GST things.');
 			
-				// Merge Key-Value pairs as defined above
-				// https://stackoverflow.com/a/50985915/13849868
-				sentenceArray[indexi] = gstKeys.reduce((obj, key, index) => (
-					{ ...obj, [key]: sentenceArray[indexi][index] }	
-				), {})
+				// Merge NMEA-183 Key-Value pairs as defined above in to each array element
+					keysReduce (gstKeys, sentenceArray[indexi]);
+				
 				//  returns [{talkerId: '$GN', sentenceType: 'GST', TcOfAssociatedGgaFix: '...}]
 			
 			}
@@ -191,25 +189,21 @@ for (let indexi = 0; indexi < sentenceArray.length ; indexi++) {
 				// Do VTG things
 					console.log('Doing VTG things.');
 			
-				// Merge Key-Value pairs as defined above
-				// https://stackoverflow.com/a/50985915/13849868
-				sentenceArray[indexi] = vtgKeys.reduce((obj, key, index) => (
-					{ ...obj, [key]: sentenceArray[indexi][index] }	
-				), {})
+				// Merge NMEA-183 Key-Value pairs as defined above in to each array element
+					keysReduce (vtgKeys, sentenceArray[indexi]);
+				
 				//  returns [{talkerId: '$GN', sentenceType: 'VTG', CourseOverGroundDegreesTrue: '...}]
 		
 			}
 			else if ( sentenceArray[indexi][1] == "ZDA" ) {
 				// Do ZDA things
 					console.log('Doing ZDA things.');
-			
-				// Merge Key-Value pairs as defined above
-				// https://stackoverflow.com/a/50985915/13849868
-				sentenceArray[indexi] = zdaKeys.reduce((obj, key, index) => (
-					{ ...obj, [key]: sentenceArray[indexi][index] }	
-				), {})
+
+				// Merge NMEA-183 Key-Value pairs as defined above in to each array element
+					keysReduce (zdaKeys, sentenceArray[indexi]);
+
 				//  returns [{talkerId: '$GN', sentenceType: 'ZDA', utc: '...]
-				
+
 			}
 			else {
 				console.log('Sentence type failed.');
@@ -218,10 +212,6 @@ for (let indexi = 0; indexi < sentenceArray.length ; indexi++) {
 }
 console.log('final', sentenceArray)
 };
-
-// Collapse the array and prepare to send out by assigning value to msg.payload
-// to export for Node-Red
-// mergedPayload = sentenceArray.reduce((r,c) => ({...r,...c}), {})
 
 /* ==========================================================
 #															#
@@ -242,7 +232,6 @@ reader.onload = function () {
 
 	// Print everything or something
 	console.log(mergedPayload);
-	// msg.payload = mergedPayload
 
 	let div = document.createElement('div');			
 
