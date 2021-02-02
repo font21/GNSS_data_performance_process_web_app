@@ -4,7 +4,7 @@
 #															#
 ========================================================== */
 
-var mergedPayload = "Nothing added to the mergedPayload varibale.";
+var mergedPayload = "Nothing added to the mergedPayload variable.";
 var sentenceArray = [];
 var earthCircumference = 6371000; // Define the circumference of the earth:
 
@@ -13,6 +13,21 @@ var earthCircumference = 6371000; // Define the circumference of the earth:
 #	Define Functions										#
 #															#
 ========================================================== */
+
+// Download file creation function
+// https://ourcodeworld.com/articles/read/189/how-to-create-a-file-and-generate-a-download-with-javascript-in-the-browser-without-a-server
+function download(filename, text) {
+	var element = document.createElement('a');
+	element.innerText = "Download Output";
+	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+	element.setAttribute('download', filename);
+
+	element.style.display = 'inline';
+	document.body.appendChild(element);
+
+	// element.click();
+	// document.body.removeChild(element);
+}
 
 // Merge Key-Value pairs as defined
 // https://stackoverflow.com/a/50985915/13849868
@@ -212,8 +227,15 @@ for (let indexi = 0; indexi < sentenceArray.length ; indexi++) {
 	}
 }
 console.log('final', sentenceArray)
+
+// Start file download.
+download("hello.txt",sentenceArray);
 };
-/*
+
+// Start file download.
+// download("hello.txt","This is the content of my file :)");
+
+  
 
 
 	 /* ================================================== \
