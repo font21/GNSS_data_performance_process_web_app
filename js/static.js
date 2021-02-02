@@ -6,6 +6,8 @@
 
 var mergedPayload = "Nothing added to the mergedPayload varibale.";
 var sentenceArray = [];
+// Define the circumference of the earth:
+const float earthCircumference = 6371000;
 
 /* ==========================================================
 #															#
@@ -212,12 +214,79 @@ for (let indexi = 0; indexi < sentenceArray.length ; indexi++) {
 }
 console.log('final', sentenceArray)
 };
+/*
+
+
+/* ==========================================================
+#															#
+#	C++ Functions by Jason									#
+#															#
+========================================================== */
+
+
+double GNSS_Function::NMEA_GGA_Dist(String NMEA_Line1, String NMEA_Line2){
+	double Lat1 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line1,2),NMEA_Get_Field(NMEA_Line1,3));
+	double Lat2 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line2,2),NMEA_Get_Field(NMEA_Line2,3));
+	double Lon1 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line1,4),NMEA_Get_Field(NMEA_Line1,5));
+	double Lon2 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line2,4),NMEA_Get_Field(NMEA_Line2,5));
+	return GNSS_Distance(Lat1,Lon1,Lat2,Lon2);
+}
+
+
+double GNSS_Function::NMEA_LATLON_ToDecemal(String NMEA_Line,String coordinateRef){
+	double coordinate = StrToDbl(NMEA_Line);
+	
+	double decimal = (int)(coordinate / 100) + ((coordinate - ((int)(coordinate / 100) * 100)) / 60);
+	if (coordinateRef.charAt(0) == 'S' || coordinateRef.charAt(0) == 'W')
+		{
+			return -decimal;
+		}
+			else
+		{
+			return decimal;
+		}
+}
+
+
+String GNSS_Function::NMEA_Get_Field(String NMEA_Line,int Field) {
+	int Count=0;
+	int STGCount = 0;
+	char STG[15]; 
+	for( int i=0; i<=NMEA_Line.length(); i++ )
+		{
+			if (NMEA_Line.charAt(i)==',' ){
+			Count++;
+			}
+			if ((Count==Field) && (NMEA_Line.charAt(i)!=',')){
+			STG[STGCount]=NMEA_Line.charAt(i);
+			STGCount++;
+			}
+		}
+	STG[STGCount]=0;
+	if (Count<Field){
+			return "";
+		}
+			else{
+			return  STG;
+		}
+}
+
+double GNSS_Function::GNSS_Distance(double Lat1,double Lon1,double Lat2,double Lon2){
+	double LA1 = MATH_D2R(Lat1);
+	double LA2 = MATH_D2R(Lat2);
+	double DLAT = MATH_D2R(Lat2-Lat1);
+	double DLON = MATH_D2R(Lon2-Lon1);
+	double A = sin(DLAT/2)*sin(DLAT/2)+cos(LA1)*cos(LA2)*sin(DLON/2)*sin(DLON/2);
+	double C = 2 * atan2(sqrt(A) ,sqrt(1-A));
+	double D = (earthCircumference * C);
+	return D;
+}
 
 /* ==========================================================
 #															#
 #	End Defined functions and Begin Page Load				#
 #															#
-========================================================== */
+  ======================================================== */
 
 const input = document.querySelector('input[type="file"]')
 

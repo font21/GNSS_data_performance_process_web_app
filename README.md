@@ -88,6 +88,9 @@ lib/GNSS_Functions/GNSS_Functions.cpp
 ### Line 193: NMEA_GGA_Dist()
 
 ```C++
+// Define the circumference of the earth:
+const float R = 6371000;
+
 double GNSS_Function::NMEA_GGA_Dist(String NMEA_Line1, String NMEA_Line2){
 	double Lat1 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line1,2),NMEA_Get_Field(NMEA_Line1,3));
 	double Lat2 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line2,2),NMEA_Get_Field(NMEA_Line2,3));
@@ -120,6 +123,7 @@ double GNSS_Function::NMEA_LATLON_ToDecemal(String NMEA_Line,String coordinateRe
 ### Line 55: NMEA_Get_Field()
 
 ```C++
+const float R = 6371000;
 String GNSS_Function::NMEA_Get_Field(String NMEA_Line,int Field) {
 	int Count=0;
 	int STGCount = 0;
