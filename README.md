@@ -124,10 +124,11 @@ double GNSS_Function::NMEA_LATLON_ToDecemal(String NMEA_Line,String coordinateRe
 
 ```C++
 const float R = 6371000;
+
 String GNSS_Function::NMEA_Get_Field(String NMEA_Line,int Field) {
 	int Count=0;
 	int STGCount = 0;
-	char STG[15]; 
+	char STG[15];
 	for( int i=0; i<=NMEA_Line.length(); i++ )
 		{
 			if (NMEA_Line.charAt(i)==',' ){
