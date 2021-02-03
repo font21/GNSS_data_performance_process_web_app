@@ -1,23 +1,32 @@
-/* ==========================================================
+	 /* ================================================= \
+	========================================================
 #															#
 #	Define global variables by using var at creation		#
 #															#
-========================================================== */
+	========================================================
+	 \ ================================================= */
 
-var mergedPayload = "Nothing added to the mergedPayload variable.";
+var mergedPayload = [];
 var sentenceArray = [];
-var earthCircumference = 6371000; // Define the circumference of the earth:
+var earthRadius = 6371000; // Define the radius of the earth:
 
-/* ==========================================================
+
+	 /* ================================================= \
+	========================================================
 #															#
 #	Define Functions										#
 #															#
-========================================================== */
+	========================================================
+	 \ ================================================= */
 
 // Download file creation function
 // https://ourcodeworld.com/articles/read/189/how-to-create-a-file-and-generate-a-download-with-javascript-in-the-browser-without-a-server
 function download(filename, text) {
 	var element = document.createElement('a');
+	// elem.className += " OutputDnlBtn";
+	// element.classList.add("OutputDnlBtn");
+	// element.className = "OutputDnlBtn";
+
 	element.innerText = "Download Output";
 	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
 	element.setAttribute('download', filename);
@@ -27,6 +36,12 @@ function download(filename, text) {
 
 	// element.click();
 	// document.body.removeChild(element);
+
+	// let el = document.getElementById('slidesContainer');
+	// el.innerHTML = `<div id='slideInner'>${el.innerHTML}</div>`;
+
+	element.setAttribute("id", " OutputDnlBtn");
+	
 }
 
 // Merge Key-Value pairs as defined
@@ -37,199 +52,205 @@ function keysReduce (nmeakey, nmeaInputArray){
 	), {})
 	
 	console.log('testReduce: ', nmeaInputArray )
+
+	// Flatten Object and push the flattened nmeaInputArray into mergedPayload
+	const flatten = (obj) =>Object.values(obj).flat()
+	flatten(nmeaInputArray)
+	mergedPayload.push(nmeaInputArray);
+	
 };
 
 function sentenceParserFunction (inputBlock) {
 
-// Reassign inputBlock to sentenceArray for preservation
-sentenceArray = inputBlock;
-console.log('initial', sentenceArray)
+	// Reassign inputBlock to sentenceArray for preservation
+	sentenceArray = inputBlock;
+	console.log('initial', sentenceArray)
 
-// Foor loop to itterate through the array
-for (let indexi = 0; indexi < sentenceArray.length ; indexi++) {
-	if (sentenceArray[indexi]) {
-		// For each object in the Array: slice out the talker and sentence type. Then, stick those back in.
-		// sentenceArray[1].forEach(function(sentencei){
-		// Separate the first value of each array in sentenceArray into talkerId and sentenceId values	
-			let talkerId = sentenceArray[indexi][0].slice(0, 3);
-			let sentenceType = sentenceArray[indexi][0].slice(3);
-			console.log('1 line', sentenceArray[indexi])
-			console.log("talkerId: " + talkerId);
-			console.log("sentenceType: " + sentenceType);
+	// Foor loop to itterate through the array
+	for (let indexi = 0; indexi < sentenceArray.length ; indexi++) {
+		if (sentenceArray[indexi]) {
+			// For each object in the Array: slice out the talker and sentence type. Then, stick those back in.
+			// sentenceArray[1].forEach(function(sentencei){
+			// Separate the first value of each array in sentenceArray into talkerId and sentenceId values	
+				let talkerId = sentenceArray[indexi][0].slice(0, 3);
+				let sentenceType = sentenceArray[indexi][0].slice(3);
+				console.log('1 line', sentenceArray[indexi])
+				console.log("talkerId: " + talkerId);
+				console.log("sentenceType: " + sentenceType);
 
-		// and stick them at the front of sentenceArray
-			sentenceArray[indexi].shift()
-			sentenceArray[indexi].unshift(talkerId,sentenceType);
-		
-		// Separate last two elements of the array as second to last and checksum values:
-			let penultimateID = sentenceArray[indexi][sentenceArray[indexi].length - 2]
-			let checksum = sentenceArray[indexi][sentenceArray[indexi].length - 1]
-		
-		// Print the values to the command line for debug.
-			console.log('penultimateID: ' + penultimateID);
-			console.log('checksum:', checksum)
-
-		// Define Keys to be paired, later
-			const cfgKeys = [
-				"talkerId",
-				"sentenceType",
-				"B",
-				"C",
-				"D",
-				"E",
-				"F",
-				"G",
-				"H",
-				"I",
-				"J",
-				"K",
-				"L",
-				"M",
-				"N",
-				"O",
-				"P",
-				"Q",
-				"R",
-				"S",
-				"T",
-				"U",
-				"V",
-				"W",
-				"X",
-				"checksum"
-			];
+			// and stick them at the front of sentenceArray
+				sentenceArray[indexi].shift()
+				sentenceArray[indexi].unshift(talkerId,sentenceType);
 			
-			const ggaKeys = [
-				"talkerId",
-				"sentenceType",
-				"utcFromDevice",
-				"latitude",
-				"latitudeDirection",
-				"longitude",
-				"longitudeDirection",
-				"gpsQuality",
-				"satellitesInUse",
-				"dilutionOfPrecision",
-				"antennaAltitude",
-				"antennaAltitudeUnit",
-				"geoidalSeparation",
-				"geoidalSeparationUnit",
-				"ageOfData",
-				"Reference station ID",
-				"checksum",
-			];
-				
-			const gstKeys = [
-				"talkerId",
-				"sentenceType",
-				"TcOfAssociatedGgaFix",
-				"StandardDeviationMetersOfSemiMajor",
-				"StandardDeviationMetersOfSemiMinor",
-				"OrientationOfSemiMajorAxisOfErrorEllipse",
-				"StandardDeviationMetersOfLatitudeError",
-				"StandardDeviationMetersOfLongitudeError",
-				"StandardDeviationMetersOfAltitudeError",
-				"checksum",
-			];
-				
-			const vtgKeys = [
-				"talkerId",
-				"sentenceType",
-				"CourseOverGroundDegreesTrue",
-				"T",
-				"CourseOverGroundDegreesMagnetic",
-				"M",
-				"SpeedOverGroundKnots",
-				"N",
-				"SpeedOverGroundKmh",
-				"K",
-				"FaaModeIndicator",
-				"checksum",
-			];
+			// Separate last two elements of the array as second to last and checksum values:
+				let penultimateID = sentenceArray[indexi][sentenceArray[indexi].length - 2]
+				let checksum = sentenceArray[indexi][sentenceArray[indexi].length - 1]
 			
-			const zdaKeys = [
-				"talkerId",
-				"sentenceType",
-				"utc",
-				"Day",
-				"Month",
-				"Year",
-				"LocalZone",
-				"LocalZoneMinutes",
-				"checksum",
-			];
+			// Print the values to the command line for debug.
+				console.log('penultimateID: ' + penultimateID);
+				console.log('checksum:', checksum)
 
-		// updated 1 line data
-			console.log('1 line updated', sentenceArray[indexi])
-
-		// If statement depending on the second element in the array (sentenceType), prepare for sending to InfluxDB.
-			if ( sentenceArray[indexi][1] == "CFG" ) {
-				// Do CFG things
-					console.log('Doing CFG things.');
-				// Merge NMEA-183 Key-Value pairs as defined above in to each array element
-					keysReduce (cfgKeys, sentenceArray[indexi]);
-				//  returns [{talkerId: '$GN', sentenceType: 'CFG'...}]
+			// Define Keys to be paired, later
+				const cfgKeys = [
+					"talkerId",
+					"sentenceType",
+					"B",
+					"C",
+					"D",
+					"E",
+					"F",
+					"G",
+					"H",
+					"I",
+					"J",
+					"K",
+					"L",
+					"M",
+					"N",
+					"O",
+					"P",
+					"Q",
+					"R",
+					"S",
+					"T",
+					"U",
+					"V",
+					"W",
+					"X",
+					"checksum"
+				];
+				
+				const ggaKeys = [
+					"talkerId",
+					"sentenceType",
+					"utcFromDevice",
+					"latitude",
+					"latitudeDirection",
+					"longitude",
+					"longitudeDirection",
+					"gpsQuality",
+					"satellitesInUse",
+					"dilutionOfPrecision",
+					"antennaAltitude",
+					"antennaAltitudeUnit",
+					"geoidalSeparation",
+					"geoidalSeparationUnit",
+					"ageOfData",
+					"Reference station ID",
+					"checksum",
+				];
 					
-			} 
-			else if ( sentenceArray[indexi][1] == "GGA" ) {	
-				// Do GGA things
-					console.log('Doing GGA things.');
-					console.log(sentenceArray[indexi].length, ggaKeys.length)
-
-				//  returns [{talkerId: '$GN', sentenceType: 'GGA', utcFromDevice: '...}]
-				console.log('testReduce', sentenceArray[indexi] )
-
-					if(sentenceArray[indexi].latitudeDirection === 'S') {
-						sentenceArray[indexi].latitude = '-'+ sentenceArray[indexi].latitude
-					}
+				const gstKeys = [
+					"talkerId",
+					"sentenceType",
+					"TcOfAssociatedGgaFix",
+					"StandardDeviationMetersOfSemiMajor",
+					"StandardDeviationMetersOfSemiMinor",
+					"OrientationOfSemiMajorAxisOfErrorEllipse",
+					"StandardDeviationMetersOfLatitudeError",
+					"StandardDeviationMetersOfLongitudeError",
+					"StandardDeviationMetersOfAltitudeError",
+					"checksum",
+				];
 					
-					if(sentenceArray[indexi].longitudeDirection === 'W') {
-						sentenceArray[indexi].longitude = '-'+ sentenceArray[indexi].longitude
-					}
+				const vtgKeys = [
+					"talkerId",
+					"sentenceType",
+					"CourseOverGroundDegreesTrue",
+					"T",
+					"CourseOverGroundDegreesMagnetic",
+					"M",
+					"SpeedOverGroundKnots",
+					"N",
+					"SpeedOverGroundKmh",
+					"K",
+					"FaaModeIndicator",
+					"checksum",
+				];
 				
-				// Merge NMEA-183 Key-Value pairs as defined above in to each array element
-					keysReduce (ggaKeys, sentenceArray[indexi]);
-			
-			}
-			else if ( sentenceArray[indexi][1] == "GST" ) {
-				// Do GST things
-					console.log('Doing GST things.');
-			
-				// Merge NMEA-183 Key-Value pairs as defined above in to each array element
-					keysReduce (gstKeys, sentenceArray[indexi]);
+				const zdaKeys = [
+					"talkerId",
+					"sentenceType",
+					"utc",
+					"Day",
+					"Month",
+					"Year",
+					"LocalZone",
+					"LocalZoneMinutes",
+					"checksum",
+				];
+
+			// updated 1 line data
+				console.log('1 line updated', sentenceArray[indexi])
+
+			// If statement depending on the second element in the array (sentenceType), prepare for sending to InfluxDB.
+				if ( sentenceArray[indexi][1] == "CFG" ) {
+					// Do CFG things
+						console.log('Doing CFG things.');
+					// Merge NMEA-183 Key-Value pairs as defined above in to each array element
+						keysReduce (cfgKeys, sentenceArray[indexi]);
+					//  returns [{talkerId: '$GN', sentenceType: 'CFG'...}]
+						
+				} 
+				else if ( sentenceArray[indexi][1] == "GGA" ) {	
+					// Do GGA things
+						console.log('Doing GGA things.');
+						console.log(sentenceArray[indexi].length, ggaKeys.length)
+
+					//  returns [{talkerId: '$GN', sentenceType: 'GGA', utcFromDevice: '...}]
+					console.log('testReduce', sentenceArray[indexi] )
+
+						if(sentenceArray[indexi].latitudeDirection === 'S') {
+							sentenceArray[indexi].latitude = '-'+ sentenceArray[indexi].latitude
+						}
+						
+						if(sentenceArray[indexi].longitudeDirection === 'W') {
+							sentenceArray[indexi].longitude = '-'+ sentenceArray[indexi].longitude
+						}
+					
+					// Merge NMEA-183 Key-Value pairs as defined above in to each array element
+						keysReduce (ggaKeys, sentenceArray[indexi]);
 				
-				//  returns [{talkerId: '$GN', sentenceType: 'GST', TcOfAssociatedGgaFix: '...}]
-			
-			}
-			else if ( sentenceArray[indexi][1] == "VTG" ) {	
-				// Do VTG things
-					console.log('Doing VTG things.');
-			
-				// Merge NMEA-183 Key-Value pairs as defined above in to each array element
-					keysReduce (vtgKeys, sentenceArray[indexi]);
+				}
+				else if ( sentenceArray[indexi][1] == "GST" ) {
+					// Do GST things
+						console.log('Doing GST things.');
 				
-				//  returns [{talkerId: '$GN', sentenceType: 'VTG', CourseOverGroundDegreesTrue: '...}]
-		
-			}
-			else if ( sentenceArray[indexi][1] == "ZDA" ) {
-				// Do ZDA things
-					console.log('Doing ZDA things.');
+					// Merge NMEA-183 Key-Value pairs as defined above in to each array element
+						keysReduce (gstKeys, sentenceArray[indexi]);
+					
+					//  returns [{talkerId: '$GN', sentenceType: 'GST', TcOfAssociatedGgaFix: '...}]
+				
+				}
+				else if ( sentenceArray[indexi][1] == "VTG" ) {	
+					// Do VTG things
+						console.log('Doing VTG things.');
+				
+					// Merge NMEA-183 Key-Value pairs as defined above in to each array element
+						keysReduce (vtgKeys, sentenceArray[indexi]);
+					
+					//  returns [{talkerId: '$GN', sentenceType: 'VTG', CourseOverGroundDegreesTrue: '...}]
+			
+				}
+				else if ( sentenceArray[indexi][1] == "ZDA" ) {
+					// Do ZDA things
+						console.log('Doing ZDA things.');
 
-				// Merge NMEA-183 Key-Value pairs as defined above in to each array element
-					keysReduce (zdaKeys, sentenceArray[indexi]);
+					// Merge NMEA-183 Key-Value pairs as defined above in to each array element
+						keysReduce (zdaKeys, sentenceArray[indexi]);
 
-				//  returns [{talkerId: '$GN', sentenceType: 'ZDA', utc: '...]
+					//  returns [{talkerId: '$GN', sentenceType: 'ZDA', utc: '...]
 
-			}
-			else {
-				console.log('Sentence type failed.');
-			}
+				}
+				else {
+					console.log('Sentence type failed.');
+				}
+		}
 	}
-}
-console.log('final', sentenceArray)
+	console.log('final', sentenceArray)
 
-// Start file download.
-download("hello.txt",sentenceArray);
+	// Start file download.
+	download("output.txt", mergedPayload);
 };
 
 // Start file download.
@@ -238,20 +259,20 @@ download("hello.txt",sentenceArray);
   
 
 
-	 /* ================================================== \
-	=========================================================
+	 /* ================================================= \
+	========================================================
 #															#
 #	C++ Functions by Jason									#
 #															#
-	=========================================================
-	 \ =+================================================ */
+	========================================================
+	 \ =+=============================================== */
 
 
 function NMEA_GGA_Dist(NMEA_Line1, NMEA_Line2){
-	const Lat1 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line1,2),NMEA_Get_Field(NMEA_Line1,3));
-	const Lat2 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line2,2),NMEA_Get_Field(NMEA_Line2,3));
-	const Lon1 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line1,4),NMEA_Get_Field(NMEA_Line1,5));
-	const Lon2 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line2,4),NMEA_Get_Field(NMEA_Line2,5));
+	const Lat1 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line1,3),NMEA_Get_Field(NMEA_Line1,4));
+	const Lat2 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line2,3),NMEA_Get_Field(NMEA_Line2,4));
+	const Lon1 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line1,5),NMEA_Get_Field(NMEA_Line1,6));
+	const Lon2 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line2,5),NMEA_Get_Field(NMEA_Line2,6));
 	return GNSS_Distance(Lat1,Lon1,Lat2,Lon2);
 }
 
@@ -270,7 +291,8 @@ function NMEA_LATLON_ToDecemal(NMEA_Line, coordinateRef){
 		}
 }
 
-
+// Takes the whole text line and takes out the field form each line.
+// Not needed bc now everything is objects
 function NMEA_Get_Field(NMEA_Line, Field) {
 	let Count=0;
 	let STGCount = 0;
@@ -301,15 +323,17 @@ function GNSS_Distance(Lat1, Lon1, Lat2, Lon2){
 	const DLON = MATH_D2R(Lon2-Lon1);
 	const A = sin(DLAT/2)*sin(DLAT/2)+cos(LA1)*cos(LA2)*sin(DLON/2)*sin(DLON/2);
 	const C = 2 * atan2(sqrt(A) ,sqrt(1-A));
-	const D = (earthCircumference * C);
+	const D = (earthRadius * C);
 	return D;
 }
 
-/* ==========================================================
+	 /* ================================================= \
+	========================================================
 #															#
 #	End Defined functions and Begin Page Load				#
 #															#
-  ======================================================== */
+	========================================================
+	 \ ================================================= */
 
 const input = document.querySelector('input[type="file"]')
 

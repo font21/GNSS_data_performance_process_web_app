@@ -68,6 +68,22 @@ h2.static{
 	font-size: large;
 }
 
+#OutputDnlBtn {
+	border: 5px solid;
+	border-color: #808080;
+	background: #910cc5;
+	color: #fff;
+	font-family: calibri;
+	display: block;
+	width: 240px;
+	font-size: 18px;
+	text-transform: uppercase;
+	padding: 10px;
+	text-align: center;
+	margin: 20px auto;
+	cursor: pointer;
+}
+
 #staticProcessButton {
 	border: 5px solid;
 	border-color: #808080;
