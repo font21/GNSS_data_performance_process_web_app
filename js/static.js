@@ -22,26 +22,28 @@ var earthRadius = 6371000; // Define the radius of the earth:
 // Download file creation function
 // https://ourcodeworld.com/articles/read/189/how-to-create-a-file-and-generate-a-download-with-javascript-in-the-browser-without-a-server
 function download(filename, text) {
-	var element = document.createElement('a');
-	// elem.className += " OutputDnlBtn";
-	// element.classList.add("OutputDnlBtn");
-	// element.className = "OutputDnlBtn";
+	// Create outside wrapper container element to apply id and styles
+	var OutputDnlBtnWrapper = document.createElement('div');
 
-	element.innerText = "Download Output";
-	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-	element.setAttribute('download', filename);
-
-	element.style.display = 'inline';
-	document.body.appendChild(element);
-
-	// element.click();
-	// document.body.removeChild(element);
-
-	// let el = document.getElementById('slidesContainer');
-	// el.innerHTML = `<div id='slideInner'>${el.innerHTML}</div>`;
-
-	element.setAttribute("id", " OutputDnlBtn");
+	// Create a tag to make a button
+	var OutputDnlBtnElement = document.createElement('a');
 	
+	OutputDnlBtnElement.innerText = "Download Output";
+	OutputDnlBtnElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+	OutputDnlBtnElement.setAttribute('download', filename);
+	OutputDnlBtnElement.style.display = 'inline';
+	document.body.appendChild(OutputDnlBtnElement);
+	
+	// Wrapper
+	// https://plainjs.com/javascript/manipulation/wrap-an-html-structure-around-an-element-28/
+	// insert wrapper before element in the DOM tree
+	OutputDnlBtnElement.parentNode.insertBefore(OutputDnlBtnWrapper, OutputDnlBtnElement);
+	
+	// move OutputDnlBtnElement element into wrapper
+	OutputDnlBtnWrapper.appendChild(OutputDnlBtnElement);
+
+	// Apply id and styles to outside wrapper
+	OutputDnlBtnWrapper.setAttribute("id", "OutputDnlBtn");
 }
 
 // Merge Key-Value pairs as defined
