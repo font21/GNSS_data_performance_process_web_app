@@ -70,11 +70,17 @@ h2.static{
 
 
 #OutputDnlBtn {
-	border: 12px solid;
-	border-color: #5e5c5c;
-	background: #bc9aca;
+	border: 3px solid;
+	border-radius: 40px;
+	color: #fff;
+	text-align: center;
+	box-shadow:
+	20px 5px 40px #CF77F3,
+	  0px 5px 40px #009BFF,
+	 -20px 5px 40px #2AC9DB;
+	 background-image: linear-gradient(-90deg, #CF77F3 0%, #009BFF 47%, #2AC9DB 100%);  
 	display: block;
-	width: 200px;
+	width: 240px;
 	font-size: 18px;
 	font-weight: bold;
 	text-transform: uppercase;
