@@ -280,7 +280,8 @@ function sentenceParserFunction (inputBlock) {
 	console.log('final', sentenceArray)
 
 	// Start file download.
-	mergedPayload = fatten(sentenceArray);
+	// mergedPayload = fatten(sentenceArray);
+	mergedPayload = JSON.stringify(sentenceArray);
 	download("output.txt", mergedPayload);
 };
 
