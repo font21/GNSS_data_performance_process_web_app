@@ -1,27 +1,61 @@
 	 /* ================================================= \
 	========================================================
-#															#
-#	Define global variables by using var at creation		#
-#															#
+															#
+Define global variables by using var at creation			#
+															#
 	========================================================
 	 \ ================================================= */
 
+// Reusing the same array name used to export in Node-Red via MQTT
 var mergedPayload = [];
+
+// working array
 var sentenceArray = [];
-var earthRadius = 6371000; // Define the radius of the earth:
+
+// Define the radius of the earth:
+var earthRadius = 6371000;
 
 
 	 /* ================================================= \
 	========================================================
-#															#
-#	Define Functions										#
-#															#
+															#
+Define Functions											#
+															#
 	========================================================
 	 \ ================================================= */
 
+
+
+
+
+
+
+// Flatten Object and push the flattened nmeaInputArray into mergedPayload
+// by Fernando Ghisi on
+// https://stackoverflow.com/questions/44134212/best-way-to-flatten-js-object-keys-and-values-to-a-single-depth-array/59787588
+function flattenObject(obj, prefix = '') {
+	return Object.keys(obj).reduce((acc, k) => {
+	  const pre = prefix.length ? prefix + '.' : '';
+	  if (typeof obj[k] === 'object') Object.assign(acc, flattenObject(obj[k], pre + k));
+	  else acc[pre + k] = obj[k];
+	  return acc;
+	}, {});
+  }
+
+function fatten(obj){
+	return Object.values(obj).flat()
+};
+
+
+
+
+
+
+
 // Download file creation function
-// https://ourcodeworld.com/articles/read/189/how-to-create-a-file-and-generate-a-download-with-javascript-in-the-browser-without-a-server
 function download(filename, text) {
+	// https://ourcodeworld.com/articles/read/189/how-to-create-a-file-and-generate-a-download-with-javascript-in-the-browser-without-a-server
+
 	// Create outside wrapper container element to apply id and styles
 	var OutputDnlBtnWrapper = document.createElement('div');
 
@@ -31,7 +65,6 @@ function download(filename, text) {
 	OutputDnlBtnElement.innerText = "Download Output";
 	OutputDnlBtnElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
 	OutputDnlBtnElement.setAttribute('download', filename);
-	OutputDnlBtnElement.style.display = 'inline';
 	document.body.appendChild(OutputDnlBtnElement);
 	
 	// Wrapper
@@ -47,19 +80,14 @@ function download(filename, text) {
 }
 
 // Merge Key-Value pairs as defined
-// https://stackoverflow.com/a/50985915/13849868
 function keysReduce (nmeakey, nmeaInputArray){
+	// https://stackoverflow.com/a/50985915/13849868
+
 	nmeaInputArray = nmeakey.reduce((obj, key, index) => (
 		{ ...obj, [key]: nmeaInputArray[index] }
 	), {})
 	
-	console.log('testReduce: ', nmeaInputArray )
-
-	// Flatten Object and push the flattened nmeaInputArray into mergedPayload
-	const flatten = (obj) =>Object.values(obj).flat()
-	flatten(nmeaInputArray)
-	mergedPayload.push(nmeaInputArray);
-	
+	console.log('testReduce: ', nmeaInputArray )	
 };
 
 function sentenceParserFunction (inputBlock) {
@@ -252,6 +280,7 @@ function sentenceParserFunction (inputBlock) {
 	console.log('final', sentenceArray)
 
 	// Start file download.
+	mergedPayload = fatten(sentenceArray);
 	download("output.txt", mergedPayload);
 };
 
@@ -261,13 +290,13 @@ function sentenceParserFunction (inputBlock) {
   
 
 
-	 /* ================================================= \
+	  /* ================================================ \
 	========================================================
-#															#
-#	C++ Functions by Jason									#
-#															#
+															#
+C++ Functions by Jason										#
+															#
 	========================================================
-	 \ =+=============================================== */
+	  \ ================================================ */
 
 
 function NMEA_GGA_Dist(NMEA_Line1, NMEA_Line2){
@@ -331,9 +360,9 @@ function GNSS_Distance(Lat1, Lon1, Lat2, Lon2){
 
 	 /* ================================================= \
 	========================================================
-#															#
-#	End Defined functions and Begin Page Load				#
-#															#
+															#
+End Defined functions and Begin Page Load					#
+															#
 	========================================================
 	 \ ================================================= */
 

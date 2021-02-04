@@ -32,13 +32,11 @@ a:visited {
 /* mouse over link */
 a:hover {
 	color: #000000;
-	text-decoration: none;
 }
   
 /* selected link */
 a:active {
 	color: #000000;
-	text-decoration: none;
 } 
 
 
@@ -66,28 +64,6 @@ a:active {
 h2.static{
 	color: #fff;
 	font-size: large;
-}
-
-
-#OutputDnlBtn {
-	border: 3px solid;
-	border-radius: 40px;
-	color: #fff;
-	text-align: center;
-	box-shadow:
-	20px 5px 40px #CF77F3,
-	  0px 5px 40px #009BFF,
-	 -20px 5px 40px #2AC9DB;
-	 background-image: linear-gradient(-90deg, #CF77F3 0%, #009BFF 47%, #2AC9DB 100%);  
-	display: block;
-	width: 240px;
-	font-size: 18px;
-	font-weight: bold;
-	text-transform: uppercase;
-	padding: 15px;
-	text-align: center;
-	margin: 40px auto;
-	cursor: pointer;
 }
 
 #staticProcessButton {
@@ -168,28 +144,61 @@ h2.dynamic{
 /* =========================
 	Begin Static.html
    ====================== */
+#OutputDnlBtn {
+	border: 3px solid;
+	border-radius: 40px;
+	color: #fff;
+	text-align: center;
+	box-shadow:
+	20px 5px 40px #CF77F3,
+	  0px 5px 40px #009BFF,
+	 -20px 5px 40px #2AC9DB;
+	 background-image: linear-gradient(-90deg, #CF77F3 0%, #009BFF 47%, #2AC9DB 100%);  
+	display: block;
+	width: 240px;
+	font-size: 18px;
+	font-weight: bold;
+	text-transform: uppercase;
+	padding: 15px;
+	text-align: center;
+	margin: 40px auto;
+	cursor: pointer;
+}
+
 .testData{
 	float: right;
-	padding: 40px;
 	color: #000000;
 	background: #5769a3;
-	margin: 40px 40px 40px 40px auto;
+	border: 3px solid;
+	border-radius: 10px;
+	padding: 40px;
+	margin: 80px 40px 40px 80px;
+}
+
+/* ====================================================
+	the rest is ignored by Firefox and no one knows why
+	http://vanseodesign.com/css/css-specificity-inheritance-cascaade/
+   ================================================= */
+p.testData{
+	font-family: monospace;
+	font-size: 10px;
+	background: #5769a3;
 }
 
 /* unvisited link */
-a.testData {
+a.testData{
 	color: #a56565;
 	text-decoration: underline;
 }
 
  /* unvisited link */
- a.testData:link {
+ a.testData:link{
 	color: #a56565;
 	text-decoration: underline;
 }
   
 /* visited link */
-a.testData:visited {
+a.testData:visited{
 	color: #a56565;
 	text-decoration: underline;
 }
