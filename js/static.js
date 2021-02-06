@@ -12,8 +12,20 @@ var mergedPayload = [];
 // working array
 var sentenceArray = [];
 
+// Create an array to hold all $xxGGA sentences
+var ggaArray = [];
+
+// Create an array to hold all $xxVTG sentences
+var vtgArray = [];
+
 // Define the radius of the earth:
 var earthRadius = 6371000;
+
+// Define variables used in the C++ Functions by Jason
+var Lat1;
+var Lon1;
+var Lat2;
+var Lon2;
 
 
 	 /* ================================================= \
@@ -28,6 +40,26 @@ Define Functions											#
 
 
 
+// create an array of GGA Messages
+function makeGgaArray (wholeArray) {
+	for (let indexi = 0; indexi < wholeArray.length ; indexi++) {
+		if ( wholeArray[indexi][1] == "GGA" ) {
+			ggaArray[element][2].push()
+		}
+		return ggaArray;
+	}
+};
+
+
+// Array of GST Messages
+function makeGgaArray (wholeArray) {
+	for (let indexi = 0; indexi < wholeArray.length ; indexi++) {
+		if ( wholeArray[indexi][1] == "GGA" ) {
+			ggaArray[element][2].push()
+		}
+		return ggaArray;
+	}
+};
 
 
 // Flatten Object and push the flattened nmeaInputArray into mergedPayload
@@ -42,8 +74,10 @@ function flattenObject(obj, prefix = '') {
 	}, {});
   }
 
-function fatten(obj){
-	return Object.values(obj).flat()
+function fatten(inArr){
+	// mergedPayload = JSON.stringify(inArr);
+	mergedPayload = JSON.stringify(inArr);
+	return mergedPayload
 };
 
 
@@ -53,8 +87,10 @@ function fatten(obj){
 
 
 // Download file creation function
-function download(filename, text) {
+function fileDownload(filename, text) {
 	// https://ourcodeworld.com/articles/read/189/how-to-create-a-file-and-generate-a-download-with-javascript-in-the-browser-without-a-server
+		// Usage
+		// fileDownload("hello.txt","This is the content of my file :)");
 
 	// Create outside wrapper container element to apply id and styles
 	var OutputDnlBtnWrapper = document.createElement('div');
@@ -87,26 +123,30 @@ function keysReduce (nmeakey, nmeaInputArray){
 		{ ...obj, [key]: nmeaInputArray[index] }
 	), {})
 	
-	console.log('testReduce: ', nmeaInputArray )	
+	// Debug
+	// console.log('testReduce: ', nmeaInputArray )	
 };
 
 function sentenceParserFunction (inputBlock) {
 
 	// Reassign inputBlock to sentenceArray for preservation
 	sentenceArray = inputBlock;
-	console.log('initial', sentenceArray)
+	
+	// Debug
+	// console.log('initial', sentenceArray)
 
-	// Foor loop to itterate through the array
+	// For loop to itterate through the array
 	for (let indexi = 0; indexi < sentenceArray.length ; indexi++) {
 		if (sentenceArray[indexi]) {
 			// For each object in the Array: slice out the talker and sentence type. Then, stick those back in.
-			// sentenceArray[1].forEach(function(sentencei){
 			// Separate the first value of each array in sentenceArray into talkerId and sentenceId values	
 				let talkerId = sentenceArray[indexi][0].slice(0, 3);
 				let sentenceType = sentenceArray[indexi][0].slice(3);
-				console.log('1 line', sentenceArray[indexi])
-				console.log("talkerId: " + talkerId);
-				console.log("sentenceType: " + sentenceType);
+				
+				// Debug 
+				// console.log('1 line', sentenceArray[indexi])
+				// console.log("talkerId: " + talkerId);
+				// console.log("sentenceType: " + sentenceType);
 
 			// and stick them at the front of sentenceArray
 				sentenceArray[indexi].shift()
@@ -116,37 +156,40 @@ function sentenceParserFunction (inputBlock) {
 				let penultimateID = sentenceArray[indexi][sentenceArray[indexi].length - 2]
 				let checksum = sentenceArray[indexi][sentenceArray[indexi].length - 1]
 			
+			// Debug:
 			// Print the values to the command line for debug.
-				console.log('penultimateID: ' + penultimateID);
-				console.log('checksum:', checksum)
+				// console.log('penultimateID: ' + penultimateID);
+				// console.log('checksum:', checksum)
 
 			// Define Keys to be paired, later
 				const cfgKeys = [
 					"talkerId",
 					"sentenceType",
-					"B",
-					"C",
-					"D",
-					"E",
-					"F",
-					"G",
-					"H",
-					"I",
-					"J",
-					"K",
-					"L",
-					"M",
-					"N",
-					"O",
-					"P",
-					"Q",
-					"R",
-					"S",
-					"T",
-					"U",
-					"V",
-					"W",
-					"X",
+					"VERSION",
+					"BOOTMODE",
+					"RECEIVER_TYPE",
+					"CONFIG_MODE",
+					"SERIAL1_CONFIG",
+					"SERIAL2_CONFIG",
+					"SERIAL1_OUTPUT",
+					"SERIAL2_OUTPUT",
+					"NMEA_FORMAT",
+					"NMEA_RATE",
+					"WIFI_SSID",
+					"WIFI_PW",
+					"NTRIP_ADDRESS",
+					"NTRIP_UN",
+					"NTRIP_PW",
+					"NTRIP_PORT",
+					"CORR_SOURCE",
+					"NTRIP_MOUNT",
+					"TILT",
+					"HEIGHT",
+					"INCHES",
+					"SUPPORT",
+					"HEADING_VECT",
+					"DUAL_ANT_LOC",
+					"RADAR_CAL",
 					"checksum"
 				];
 				
@@ -210,8 +253,8 @@ function sentenceParserFunction (inputBlock) {
 					"checksum",
 				];
 
-			// updated 1 line data
-				console.log('1 line updated', sentenceArray[indexi])
+			// Print to the command line which line is being processed.
+				console.log('Row ' + sentenceArray[indexi] + ' updated:')
 
 			// If statement depending on the second element in the array (sentenceType), prepare for sending to InfluxDB.
 				if ( sentenceArray[indexi][1] == "CFG" ) {
@@ -222,13 +265,19 @@ function sentenceParserFunction (inputBlock) {
 					//  returns [{talkerId: '$GN', sentenceType: 'CFG'...}]
 						
 				} 
-				else if ( sentenceArray[indexi][1] == "GGA" ) {	
+				else if ( sentenceArray[indexi][1] == "GGA" ) {
 					// Do GGA things
 						console.log('Doing GGA things.');
-						console.log(sentenceArray[indexi].length, ggaKeys.length)
+						
+						// Debug:
+						// console.log(sentenceArray[indexi].length, ggaKeys.length)
 
 					//  returns [{talkerId: '$GN', sentenceType: 'GGA', utcFromDevice: '...}]
-					console.log('testReduce', sentenceArray[indexi] )
+						// Debug:
+						// console.log('testReduce', sentenceArray[indexi] )
+
+					// c++ transalated
+						NMEA_GGA_Dist(sentenceArray[indexi], sentenceArray[indexi-1])
 
 						if(sentenceArray[indexi].latitudeDirection === 'S') {
 							sentenceArray[indexi].latitude = '-'+ sentenceArray[indexi].latitude
@@ -277,18 +326,16 @@ function sentenceParserFunction (inputBlock) {
 				}
 		}
 	}
-	console.log('final', sentenceArray)
 
-	// Start file download.
-	// mergedPayload = fatten(sentenceArray);
-	mergedPayload = JSON.stringify(sentenceArray);
-	download("output.txt", mergedPayload);
+	// Attempt to collate the data to send out.
+	console.log('Printing at the end of sentenceParserFunction(): ', sentenceArray)
+	mergedPayload = fatten(sentenceArray);
+
+	// Export mergedPayload array to file fordownload.
+	fileDownload("output.txt", mergedPayload);
 };
 
-// Start file download.
-// download("hello.txt","This is the content of my file :)");
 
-  
 
 
 	  /* ================================================ \
@@ -299,7 +346,7 @@ C++ Functions by Jason										#
 	========================================================
 	  \ ================================================ */
 
-
+/* original C++
 function NMEA_GGA_Dist(NMEA_Line1, NMEA_Line2){
 	const Lat1 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line1,3),NMEA_Get_Field(NMEA_Line1,4));
 	const Lat2 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line2,3),NMEA_Get_Field(NMEA_Line2,4));
@@ -307,15 +354,30 @@ function NMEA_GGA_Dist(NMEA_Line1, NMEA_Line2){
 	const Lon2 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line2,5),NMEA_Get_Field(NMEA_Line2,6));
 	return GNSS_Distance(Lat1,Lon1,Lat2,Lon2);
 }
+*/
+function NMEA_Dist(sentenceType, NMEA_Line1, NMEA_Line2){
+	// Verify that both objects match the expected incomming sentence type before proceding.
+	if ((NMEA_Line1[2] == sentenceType) && (NMEA_Line2[2] == sentenceType)) {
+		const Lat1 = NMEA_LATLON_ToDecimal(NMEA_Line1[3],NMEA_Line1[4]);
+		const Lat2 = NMEA_LATLON_ToDecimal(NMEA_Line2[3],NMEA_Line2[4]);
+		const Lon1 = NMEA_LATLON_ToDecimal(NMEA_Line1[5],NMEA_Line1[6]);
+		const Lon2 = NMEA_LATLON_ToDecimal(NMEA_Line2[5],NMEA_Line2[6]);
+		return GNSS_Distance(Lat1,Lon1,Lat2,Lon2);
+	} else {
+		// Debug
+		console.log(NMEA_Line1[2] + 'does not equal ' + sentenceType);
+		break;
+	}	
+}
 
 
-function NMEA_LATLON_ToDecemal(NMEA_Line, coordinateRef){
-	const coordinate = StrToDbl(NMEA_Line);
+function NMEA_LATLON_ToDecimal(NMEA_Line, coordinateRef){
+	const coordinate = NMEA_Line;
 	
-	let decimal = (int)(coordinate / 100) + ((coordinate - ((int)(coordinate / 100) * 100)) / 60);
-	if (coordinateRef.charAt(0) == 'S' || coordinateRef.charAt(0) == 'W')
+	let decimal = ((coordinate / 100) + ((coordinate - ((coordinate / 100) * 100)) / 60));
+	if (coordinateRef == 'S' || coordinateRef == 'W')
 		{
-			return -decimal;
+			return -Math.abs(decimal);
 		}
 			else
 		{
@@ -323,6 +385,7 @@ function NMEA_LATLON_ToDecemal(NMEA_Line, coordinateRef){
 		}
 }
 
+// --=[ NOT NEEDED ]=--
 // Takes the whole text line and takes out the field form each line.
 // Not needed bc now everything is objects
 function NMEA_Get_Field(NMEA_Line, Field) {
@@ -378,13 +441,10 @@ reader.onload = function () {
 	})
 	sentenceParserFunction(lines);
 
-	// Print everything or something
-	console.log(mergedPayload);
-
-	let div = document.createElement('div');			
-
-	div.innerHTML = mergedPayload;
-	document.body.append(div);
+	// Append to page instead of sending to the Console Log. // console.log(mergedPayload);
+	let mergedPayloadDiv = document.createElement('div');
+	mergedPayloadDiv.innerHTML = mergedPayload;
+	document.body.append(mergedPayloadDiv);
 }
 reader.readAsText(input.files[0])
 }, false)
