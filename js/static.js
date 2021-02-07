@@ -12,11 +12,12 @@ var mergedPayload = [];
 // working array
 var sentenceArray = [];
 
-// Create an array to hold all $xxGGA sentences
+// Create an arrays to hold all $xxGGA, $xxVTG, $xxGST, and $xxZDA sentences to be filled by the makeSentenceArray() function.
 var ggaArray = [];
-
-// Create an array to hold all $xxVTG sentences
 var vtgArray = [];
+var gstArray = [];
+var zdaArray = [];
+
 
 // Define the radius of the earth:
 var earthRadius = 6371000;
@@ -41,24 +42,32 @@ Define Functions											#
 
 
 // create an array of GGA Messages
-function makeGgaArray (wholeArray) {
+function makeGgaArray(wholeArray) {
 	for (let indexi = 0; indexi < wholeArray.length ; indexi++) {
 		if ( wholeArray[indexi][1] == "GGA" ) {
-			ggaArray[element][2].push()
+			ggaArray[indexi][2].push()
+		} else {
+			console.log('')
 		}
-		return ggaArray;
 	}
+	return ggaArray;
 };
 
 
-// Array of GST Messages
-function makeGgaArray (wholeArray) {
+// Create Dynamically named Array of sentenceType Messages
+function makeSentenceArray(wholeArray, sentenceType) {
+	// const sentenceTypeName = eval(`${sentenceType}Array`);
+	let eval(`${sentenceType}Array`) = [];
+
 	for (let indexi = 0; indexi < wholeArray.length ; indexi++) {
-		if ( wholeArray[indexi][1] == "GGA" ) {
-			ggaArray[element][2].push()
+		if ( wholeArray[indexi][1] == sentenceType ) {
+			`${sentenceType}Array`[indexi][2].push();
+		} else {
+			console.log('Skipping line : ' + indexi + ' because it does not equal' + sentenceType + '.');
+			console.log('Contents: ' + wholeArray[indexi][1]);
 		}
-		return ggaArray;
 	}
+	return `${sentenceType}Array`;
 };
 
 
@@ -445,6 +454,9 @@ reader.onload = function () {
 	let mergedPayloadDiv = document.createElement('div');
 	mergedPayloadDiv.innerHTML = mergedPayload;
 	document.body.append(mergedPayloadDiv);
+
+	makeSentenceArray(sentenceArray, GGA);
+	document.body.append(GGAArray);
 }
 reader.readAsText(input.files[0])
-}, false)
+}, false);
