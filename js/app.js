@@ -1,8 +1,30 @@
 // Message if JavaScript is connected and running
 console.log('JavaScript connected.');
 
+
 // Page load timers : set
 const startTime = performance.now();
+
+
+/* ======================================
+	Functions
+===================================== */
+
+const staticFileInputFunction = () => {
+	const staticFileInput = document.querySelector('staticFileInput[type="file"]')
+
+	staticFileInput.addEventListener('submit', function (e) {
+		console.log(staticFileInput.files)
+		const reader = new FileReader()
+		reader.onload = function () {	
+			const lines = reader.result.split('\n').map(function (line) {
+				return line.split(',')
+			})
+			console.log(lines)
+		}
+		reader.readAsText(staticFileInput.files[0])
+	}, false)
+}
 
 
 // The Document Ready Event
@@ -48,21 +70,25 @@ const startTime = performance.now();
 		Static
 		Static browse, upload single file, and process.
 	 ===================================== */
+	 staticFileInputFunction();
+		// const myStaticForm = document.getElementById("myStaticForm");
+		// const staticFile = document.getElementById("staticFile");
 
-		const myStaticForm = document.getElementById("myStaticForm");
-		const staticFile = document.getElementById("staticFile");
+		// myStaticForm.addEventListener("submit", e => {
+		// 	// Prevent page reload
+		// 		e.preventDefault();
 
-		myStaticForm.addEventListener("submit", e => {
-			// Prevent page reload
-				e.preventDefault();
+		// 	// const endpoint = "upload.php";
+		// 		const formData = new FormData();
+		// 		console.log(staticFile.files);
+		// 		formData.append("staticFile", staticFile.files[0]);	
 
-			// const endpoint = "upload.php";
-				const formData = new FormData();
-				console.log(staticFile.files);
-				formData.append("staticFile", staticFile.files[0]);	
+		// });
 
-		});
+		
 	});
+	
+
 
 /* -- Split-by-line code breaks DIVs displayed by radio button selector:
 
