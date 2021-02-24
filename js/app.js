@@ -34,7 +34,7 @@ const staticFileInputFunction = () => {
 		console.log('jQuery connected.');
 
 	/* ======================================
-		RADIO BUTTONs
+		RADIO BUTTON ACTION
 	=======================================*/
 	// to select static (single file upload) or Dynamic (multiple file upload).
 		$('input[type="radio"]').click(function(){

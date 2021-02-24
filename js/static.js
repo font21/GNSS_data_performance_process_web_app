@@ -1,18 +1,21 @@
 	 /* ================================================= \
 	========================================================
 															#
-Define global variables by using var at creation			#
+Define GLOBAL variables and arrays by using var			#
 															#
 	========================================================
 	 \ ================================================= */
 
-// Reusing the same array name used to export in Node-Red via MQTT
-var mergedPayload = [];
+// Reusing the same array name used to export in Node-Red via MQTT. Will be used as a final array name to be displayed and sent to file.
+var mergedPayload;
 
-// working array
+// working array. Will be used as an incomming array name to be processed.
 var sentenceArray = [];
 
-// Create an arrays to hold all $xxGGA, $xxVTG, $xxGST, and $xxZDA sentences to be filled by the makeSentenceArray() function.
+// Array that will hold the initial file data split by carriage return.
+var lines = [];
+
+// Create global arrays to hold only $xxGGA, $xxVTG, $xxGST, and $xxZDA sentences to be filled by the groupSentenceType() function.
 var ggaArray = [];
 var vtgArray = [];
 var gstArray = [];
@@ -38,36 +41,30 @@ Define Functions											#
 	 \ ================================================= */
 
 
-
-
-
-// create an array of GGA Messages
-function makeGgaArray(wholeArray) {
+// function to split out sentences by type in their own arrays: ggaArray, vtgArray, gstArray, zdaArray
+function groupSentenceType(wholeArray, sentenceType) {
+	console.log('running groupSentenceType().')
+	console.log(wholeArray)
 	for (let indexi = 0; indexi < wholeArray.length ; indexi++) {
-		if ( wholeArray[indexi][1] == "GGA" ) {
-			ggaArray[indexi][2].push()
+		
+		console.log('wholeArray[0][2] is ' + wholeArray[0][2])
+		console.log('wholeArray[1][2] is ' + wholeArray[1][2])
+		console.log('wholeArray[2][2] is ' + wholeArray[2][2])
+		if ( 		wholeArray[indexi][2] == 'GGA' ) {
+			ggaArray.push(wholeArray[indexi]);	
+		} else if (	wholeArray[indexi][2] == 'VTG' ) {
+			vtgArray.push(wholeArray[indexi]);
+		} else if (	wholeArray[indexi][2] == 'GST' ) {
+			gstArray.push(wholeArray[indexi]);
+		} else if (	wholeArray[indexi][2] == 'ZDA' ) {
+			zdaArray.push(wholeArray[indexi]);
 		} else {
-			console.log('')
-		}
-	}
-	return ggaArray;
-};
-
-
-// Create Dynamically named Array of sentenceType Messages
-function makeSentenceArray(wholeArray, sentenceType) {
-	// const sentenceTypeName = eval(`${sentenceType}Array`);
-	let eval(`${sentenceType}Array`) = [];
-
-	for (let indexi = 0; indexi < wholeArray.length ; indexi++) {
-		if ( wholeArray[indexi][1] == sentenceType ) {
-			`${sentenceType}Array`[indexi][2].push();
-		} else {
+			// DeBug
 			console.log('Skipping line : ' + indexi + ' because it does not equal' + sentenceType + '.');
 			console.log('Contents: ' + wholeArray[indexi][1]);
 		}
 	}
-	return `${sentenceType}Array`;
+	return;
 };
 
 
@@ -75,31 +72,31 @@ function makeSentenceArray(wholeArray, sentenceType) {
 // by Fernando Ghisi on
 // https://stackoverflow.com/questions/44134212/best-way-to-flatten-js-object-keys-and-values-to-a-single-depth-array/59787588
 function flattenObject(obj, prefix = '') {
-	return Object.keys(obj).reduce((acc, k) => {
+	return Object.keys(obj).reduce((mergedPayload, k) => {
 	  const pre = prefix.length ? prefix + '.' : '';
-	  if (typeof obj[k] === 'object') Object.assign(acc, flattenObject(obj[k], pre + k));
-	  else acc[pre + k] = obj[k];
-	  return acc;
+	  if (typeof obj[k] === 'object') Object.assign(mergedPayload, flattenObject(obj[k], pre + k));
+	  else mergedPayload[pre + k] = obj[k];
+	  return mergedPayload;
 	}, {});
   }
 
-function fatten(inArr){
+// Convert an array of objects and flatten the contents of the array into a flat string in preperation to be made the contents of an output file.
+function fatten(arrayToFatten){
 	// mergedPayload = JSON.stringify(inArr);
-	mergedPayload = JSON.stringify(inArr);
+
+	// https://stackoverflow.com/questions/14615669/convert-objects-properties-and-values-to-array-of-key-value-pairs
+	for(var i of arrayToFatten) {
+		var key = Object.keys(i).toString();
 	return mergedPayload
+	};
+	
 };
 
-
-
-
-
-
-
 // Download file creation function
-function fileDownload(filename, text) {
+function outputFileDownload(filename, filenameText, idText) {
 	// https://ourcodeworld.com/articles/read/189/how-to-create-a-file-and-generate-a-download-with-javascript-in-the-browser-without-a-server
 		// Usage
-		// fileDownload("hello.txt","This is the content of my file :)");
+		// outputFileDownload("hello.txt","This is the content of my file :)");
 
 	// Create outside wrapper container element to apply id and styles
 	var OutputDnlBtnWrapper = document.createElement('div');
@@ -108,7 +105,7 @@ function fileDownload(filename, text) {
 	var OutputDnlBtnElement = document.createElement('a');
 	
 	OutputDnlBtnElement.innerText = "Download Output";
-	OutputDnlBtnElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+	OutputDnlBtnElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(filenameText));
 	OutputDnlBtnElement.setAttribute('download', filename);
 	document.body.appendChild(OutputDnlBtnElement);
 	
@@ -121,7 +118,11 @@ function fileDownload(filename, text) {
 	OutputDnlBtnWrapper.appendChild(OutputDnlBtnElement);
 
 	// Apply id and styles to outside wrapper
-	OutputDnlBtnWrapper.setAttribute("id", "OutputDnlBtn");
+	OutputDnlBtnWrapper.setAttribute("id", idText);
+
+	// Additional Javascript FileAPI reading:
+	// https://javascript.info/file
+	// https://www.w3.org/TR/FileAPI/
 }
 
 // Merge Key-Value pairs as defined
@@ -136,7 +137,7 @@ function keysReduce (nmeakey, nmeaInputArray){
 	// console.log('testReduce: ', nmeaInputArray )	
 };
 
-function sentenceParserFunction (inputBlock) {
+function sentenceParserFunction(inputBlock) {
 
 	// Reassign inputBlock to sentenceArray for preservation
 	sentenceArray = inputBlock;
@@ -266,86 +267,127 @@ function sentenceParserFunction (inputBlock) {
 				console.log('Row ' + sentenceArray[indexi] + ' updated:')
 
 			// If statement depending on the second element in the array (sentenceType), prepare for sending to InfluxDB.
-				if ( sentenceArray[indexi][1] == "CFG" ) {
-					// Do CFG things
-						console.log('Doing CFG things.');
-					// Merge NMEA-183 Key-Value pairs as defined above in to each array element
-						keysReduce (cfgKeys, sentenceArray[indexi]);
-					//  returns [{talkerId: '$GN', sentenceType: 'CFG'...}]
-						
-				} 
-				else if ( sentenceArray[indexi][1] == "GGA" ) {
-					// Do GGA things
-						console.log('Doing GGA things.');
-						
-						// Debug:
-						// console.log(sentenceArray[indexi].length, ggaKeys.length)
-
-					//  returns [{talkerId: '$GN', sentenceType: 'GGA', utcFromDevice: '...}]
-						// Debug:
-						// console.log('testReduce', sentenceArray[indexi] )
-
-					// c++ transalated
-						NMEA_GGA_Dist(sentenceArray[indexi], sentenceArray[indexi-1])
-
-						if(sentenceArray[indexi].latitudeDirection === 'S') {
-							sentenceArray[indexi].latitude = '-'+ sentenceArray[indexi].latitude
-						}
-						
-						if(sentenceArray[indexi].longitudeDirection === 'W') {
-							sentenceArray[indexi].longitude = '-'+ sentenceArray[indexi].longitude
-						}
+			if ( sentenceArray[indexi][1] == "CFG" ) {
+				// Do CFG things
+					console.log('Doing CFG things.');
+				// Merge NMEA-183 Key-Value pairs as defined above in to each array element
+					keysReduce (cfgKeys, sentenceArray[indexi]);
+				//  returns [{talkerId: '$GN', sentenceType: 'CFG'...}]
 					
-					// Merge NMEA-183 Key-Value pairs as defined above in to each array element
-						keysReduce (ggaKeys, sentenceArray[indexi]);
-				
-				}
-				else if ( sentenceArray[indexi][1] == "GST" ) {
-					// Do GST things
-						console.log('Doing GST things.');
-				
-					// Merge NMEA-183 Key-Value pairs as defined above in to each array element
-						keysReduce (gstKeys, sentenceArray[indexi]);
+			} 
+			else if ( sentenceArray[indexi][1] == "GGA" ) {
+				// Do GGA things
+					console.log('Doing GGA things.');
 					
-					//  returns [{talkerId: '$GN', sentenceType: 'GST', TcOfAssociatedGgaFix: '...}]
-				
-				}
-				else if ( sentenceArray[indexi][1] == "VTG" ) {	
-					// Do VTG things
-						console.log('Doing VTG things.');
-				
-					// Merge NMEA-183 Key-Value pairs as defined above in to each array element
-						keysReduce (vtgKeys, sentenceArray[indexi]);
+					// Debug:
+					// console.log(sentenceArray[indexi].length, ggaKeys.length)
+
+				//  returns [{talkerId: '$GN', sentenceType: 'GGA', utcFromDevice: '...}]
+					// Debug:
+					// console.log('testReduce', sentenceArray[indexi] )
+
+				// c++ transalated
+					NMEA_GGA_Dist(sentenceArray[indexi], sentenceArray[indexi-1])
+
+					if(sentenceArray[indexi].latitudeDirection === 'S') {
+						sentenceArray[indexi].latitude = '-'+ sentenceArray[indexi].latitude
+					}
 					
-					//  returns [{talkerId: '$GN', sentenceType: 'VTG', CourseOverGroundDegreesTrue: '...}]
+					if(sentenceArray[indexi].longitudeDirection === 'W') {
+						sentenceArray[indexi].longitude = '-'+ sentenceArray[indexi].longitude
+					}
+				
+				// Merge NMEA-183 Key-Value pairs as defined above in to each array element
+					keysReduce (ggaKeys, sentenceArray[indexi]);
 			
-				}
-				else if ( sentenceArray[indexi][1] == "ZDA" ) {
-					// Do ZDA things
-						console.log('Doing ZDA things.');
+			}
+			else if ( sentenceArray[indexi][1] == "GST" ) {
+				// Do GST things
+					console.log('Doing GST things.');
+			
+				// Merge NMEA-183 Key-Value pairs as defined above in to each array element
+					keysReduce (gstKeys, sentenceArray[indexi]);
+				
+				//  returns [{talkerId: '$GN', sentenceType: 'GST', TcOfAssociatedGgaFix: '...}]
+			
+			}
+			else if ( sentenceArray[indexi][1] == "VTG" ) {	
+				// Do VTG things
+					console.log('Doing VTG things.');
+			
+				// Merge NMEA-183 Key-Value pairs as defined above in to each array element
+					keysReduce (vtgKeys, sentenceArray[indexi]);
+				
+				//  returns [{talkerId: '$GN', sentenceType: 'VTG', CourseOverGroundDegreesTrue: '...}]
+		
+			}
+			else if ( sentenceArray[indexi][1] == "ZDA" ) {
+				// Do ZDA things
+					console.log('Doing ZDA things.');
 
-					// Merge NMEA-183 Key-Value pairs as defined above in to each array element
-						keysReduce (zdaKeys, sentenceArray[indexi]);
+				// Merge NMEA-183 Key-Value pairs as defined above in to each array element
+					keysReduce (zdaKeys, sentenceArray[indexi]);
 
-					//  returns [{talkerId: '$GN', sentenceType: 'ZDA', utc: '...]
+				//  returns [{talkerId: '$GN', sentenceType: 'ZDA', utc: '...]
 
-				}
-				else {
-					console.log('Sentence type failed.');
-				}
+			}
+			else {
+				console.log('Sentence type failed.');
+			}
 		}
 	}
-
-	// Attempt to collate the data to send out.
-	console.log('Printing at the end of sentenceParserFunction(): ', sentenceArray)
-	mergedPayload = fatten(sentenceArray);
-
-	// Export mergedPayload array to file fordownload.
-	fileDownload("output.txt", mergedPayload);
+	return sentenceArray
 };
 
 
 
+
+function mainsss(mainsArray) {
+	console.log("The Mains function began to run.")
+	
+	// reader.readAsText(input.files[0])
+
+	sentenceParserFunction(mainsArray);
+
+	// Append to page in addition to sending to the Console Log. // console.log(mergedPayload);
+	let mergedPayloadDiv = document.createElement('div');
+	mergedPayloadDiv.innerHTML = mergedPayload;
+	document.body.append(mergedPayloadDiv);
+
+	// Pass the whole array and print out the four arrays spit out: ggaArray vtgArray, gstArray, zdaArray
+	
+	
+	// separate out GGA sentences an stick them into ggaArray
+	groupSentenceType(mainsArray, 'GGA');
+	// Print the contents of ggaArray to the console log and the page
+	console.log(ggaArray);
+	document.body.append(ggaArray);
+	// Export ggaArray to file for download
+	outputFileDownload("ggaOutput.txt", ggaArray, "ggaOutputDnlBtn");
+
+
+	// separate out VTG sentences an stick them into vtgArray
+	groupSentenceType(mainsArray, 'VTG');
+	// Print the contents of vtgArray to the console log and the page
+	console.log(vtgArray);
+	document.body.append(vtgArray);
+	// Export vtgArray to file for download
+	outputFileDownload("vtgOutput.txt", vtgArray, "vtgOutputDnlBtn");
+
+
+
+
+
+	
+
+	// Attempt to collate the data to send out.
+	console.log('Printing at the end of sentenceParserFunction(): sentenceArray')
+	mergedPayload = fatten(sentenceArray);
+
+	
+
+	console.log("The Mains function completed its run.")
+}
 
 	  /* ================================================ \
 	========================================================
@@ -355,15 +397,17 @@ C++ Functions by Jason										#
 	========================================================
 	  \ ================================================ */
 
-/* original C++
+/* Original untouched C++ code by Jason
 function NMEA_GGA_Dist(NMEA_Line1, NMEA_Line2){
-	const Lat1 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line1,3),NMEA_Get_Field(NMEA_Line1,4));
-	const Lat2 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line2,3),NMEA_Get_Field(NMEA_Line2,4));
-	const Lon1 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line1,5),NMEA_Get_Field(NMEA_Line1,6));
-	const Lon2 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line2,5),NMEA_Get_Field(NMEA_Line2,6));
+	double Lat1 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line1,2),NMEA_Get_Field(NMEA_Line1,3));
+	double Lat2 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line2,2),NMEA_Get_Field(NMEA_Line2,3));
+	double Lon1 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line1,4),NMEA_Get_Field(NMEA_Line1,5));
+	double Lon2 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line2,4),NMEA_Get_Field(NMEA_Line2,5));
 	return GNSS_Distance(Lat1,Lon1,Lat2,Lon2);
 }
 */
+
+
 function NMEA_Dist(sentenceType, NMEA_Line1, NMEA_Line2){
 	// Verify that both objects match the expected incomming sentence type before proceding.
 	if ((NMEA_Line1[2] == sentenceType) && (NMEA_Line2[2] == sentenceType)) {
@@ -375,8 +419,7 @@ function NMEA_Dist(sentenceType, NMEA_Line1, NMEA_Line2){
 	} else {
 		// Debug
 		console.log(NMEA_Line1[2] + 'does not equal ' + sentenceType);
-		break;
-	}	
+	}
 }
 
 
@@ -420,6 +463,27 @@ function NMEA_Get_Field(NMEA_Line, Field) {
 		}
 }
 
+/* --=[ Original untouched C++ code by Jason ]=--
+double GNSS_Function::MATH_D2R(double Deg){
+	return (Deg*PI/180);
+}
+
+double GNSS_Function::GNSS_Distance(double Lat1,double Lon1,double Lat2,double Lon2){
+      double LA1 = MATH_D2R(Lat1);
+      double LA2 = MATH_D2R(Lat2);
+      double DLAT = MATH_D2R(Lat2-Lat1);
+      double DLON = MATH_D2R(Lon2-Lon1);
+      double A = sin(DLAT/2)*sin(DLAT/2)+cos(LA1)*cos(LA2)*sin(DLON/2)*sin(DLON/2);
+      double C = 2 * atan2(sqrt(A) ,sqrt(1-A));
+      double D = (R * C);
+      return D;
+    }
+*/
+
+function MATH_D2R(Degrees){
+	return (Degrees*PI/180);
+}
+
 function GNSS_Distance(Lat1, Lon1, Lat2, Lon2){
 	const LA1 = MATH_D2R(Lat1);
 	const LA2 = MATH_D2R(Lat2);
@@ -430,6 +494,7 @@ function GNSS_Distance(Lat1, Lon1, Lat2, Lon2){
 	const D = (earthRadius * C);
 	return D;
 }
+
 
 	 /* ================================================= \
 	========================================================
@@ -444,19 +509,17 @@ const input = document.querySelector('input[type="file"]')
 input.addEventListener('change', function (e) {
 console.log(input.files)
 const reader = new FileReader()
-reader.onload = function () {
-	let lines = reader.result.split('\n').map(function (line) {
-		return line.match(/([$0-9.-\w])+/g)
-	})
-	sentenceParserFunction(lines);
 
-	// Append to page instead of sending to the Console Log. // console.log(mergedPayload);
-	let mergedPayloadDiv = document.createElement('div');
-	mergedPayloadDiv.innerHTML = mergedPayload;
-	document.body.append(mergedPayloadDiv);
-
-	makeSentenceArray(sentenceArray, GGA);
-	document.body.append(GGAArray);
-}
 reader.readAsText(input.files[0])
+
+reader.onload = function () {
+	var lines = reader.result.split('\n').map(function (line) {
+		return line.match(/([$0-9.-\w])+/g)
+	});
+}
+console.log(lines)
+mainsss(lines);
+
+console.log("after mains.");
+
 }, false);
