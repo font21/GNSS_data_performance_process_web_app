@@ -38,54 +38,54 @@ def main(argv):
 			sys.exit()
 		elif opt in ("-i", "--ifile"):
 			inputfile = arg
-			#try:
-			# https://www.guru99.com/reading-and-writing-files-in-python.html	
-			inFile = open(inputfile, "r")
-			staticInputFileContents = inFile.read()
-			# Debug - after file contents assign
-			# print(staticInputFileContents)
-			staticLineList = staticInputFileContents.splitlines()
-			# Debug - after line split to list
-			# print(staticLineList)
-			i = 0
-			while i < len(staticLineList):
-				thisLine = staticLineList[i]
-				# print(thisLine)
-				# sepSentence(staticLineList[i])
+			try:
+				# https://www.guru99.com/reading-and-writing-files-in-python.html	
+				inFile = open(inputfile, "r")
+				staticInputFileContents = inFile.read()
+				# Debug - after file contents assign
+				# print(staticInputFileContents)
+				staticLineList = staticInputFileContents.splitlines()
+				# Debug - after line split to list
+				# print(staticLineList)
+				i = 0
+				while i < len(staticLineList):
+					thisLine = staticLineList[i]
+					# print(thisLine)
+					# sepSentence(staticLineList[i])
 
-				if thisLine[3:6] == 'GGA':
-					ggaList.append(thisLine)
-				elif thisLine[3:6] == 'GST':
-					gstList.append(thisLine)
-				elif thisLine[3:6] == 'VTG':
-					vtgList.append(thisLine)
-				i = i + 1
-				
-			# print(ggaList)
-			# print(gstList)
-			# print(vtgList)
-			# File In clean up
-			print('File In section complete.')
-			inFile.close()
+					if thisLine[3:6] == 'GGA':
+						ggaList.append(thisLine)
+					elif thisLine[3:6] == 'GST':
+						gstList.append(thisLine)
+					elif thisLine[3:6] == 'VTG':
+						vtgList.append(thisLine)
+					i = i + 1
+					
+				# print(ggaList)
+				# print(gstList)
+				# print(vtgList)
+
+				# File In clean up
+				print('File In section complete.')
+				inFile.close()
 	
-			#except:
-			#	print('Path ' + inputfile + ' does not exist.')
+			except:
+				print('Path ' + inputfile + ' does not exist.')
 
 		elif opt in ("-o", "--ofile"):
 			outputfile = arg
 			outputfileContents = 'GGA Sentences: \n' + str(ggaList) + '\n\nGST Sentences: \n' + str(gstList) + '\n\nVTG Sentences: \n' + str(vtgList)
 			print(outputfileContents)
-			#try:
-			wOut = open(outputfile, "w")
-			# wOut.write("Hello World")
-			wOut.write(outputfileContents)
-		
-			# File Out clean up
-			print('File Out section complete.')
-			wOut.close()
+			try:
+				wOut = open(outputfile, "w")
+				wOut.write(outputfileContents)
+			
+				# File Out clean up
+				print('File Out section complete.')
+				wOut.close()
 
-			#except:
-			#	print('Path ' + outputfile + ' does not exist.')
+			except:
+				print('Path ' + outputfile + ' does not exist.')
 
 	print 'Input file is',inputfile
 	print 'Output file is',outputfile
