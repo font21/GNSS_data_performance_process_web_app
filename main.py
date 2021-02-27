@@ -138,13 +138,11 @@ def splitty(inputString):
 def NMEA_LATLON_ToDecimal(NMEA_Line, coordinateRef):
 	coordinate = NMEA_Line[coordinateRef]
 	decimal = ((coordinate / 100) + ((coordinate - ((coordinate / 100) * 100)) / 60))
-	if ((coordinateRef == 'S') || (coordinateRef == 'W')):
-		{
-			return decimal * -1
-		}
-			else
-		{
-			return decimal
+	if ((coordinateRef == 'S') or (coordinateRef == 'W')):
+		decimal = -(abs(decimal))
+		return decimal
+	else:
+		return decimal
 
 def NMEA_GGA_Dist(NMEA_Line1, NMEA_Line2):
 	Lat1 = NMEA_LATLON_ToDecemal(NMEA_Get_Field(NMEA_Line1,2),NMEA_Get_Field(NMEA_Line1,3))
@@ -164,8 +162,8 @@ def GNSS_Distance(Lat1, Lon1, Lat2, Lon2):
 	D = (earthRadius * C)
 	return D
 
-def MATH_D2R(Degrees){
-	return (Degrees*PI/180);
+def MATH_D2R(Degrees):
+	return (Degrees*PI/180)
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
