@@ -8,26 +8,27 @@ import sys, getopt
 
 
 # Global Variables
-global inputfile
-global outputfile
-global ggaDict
-global gstDict
-global vtgDict
-global helpText
-global earthRadius
-global D
 
-global Lat1
-global Lon1
-global Lat2
-global Lon2
 
-global earthRadius
-earthRadius = 6371000
+
+
+
+global outputfileContents
+global outputObj
+
+
 
 def main(argv):
 	# https://www.tutorialspoint.com/python/python_command_line_arguments.htm
 
+	global helpText
+
+	global inputfile
+	global outputfile
+	global ggaDict
+	global gstDict
+	global vtgDict
+	
 	inputfile = ''
 	outputfile = ''
 	helpText = 'static.py -i <inputfile> -o <outputfile>'
@@ -99,21 +100,39 @@ def main(argv):
 	
 		elif opt in ("-o", "--ofile"):
 			outputfile = arg
-			outputfileContents = 'Sentences: \n' \
-				+ '\n\nGGA Sentences: \n' + str(ggaList) \
-				+ '\n\nGST Sentences: \n' + str(gstList) \
-				+ '\n\nVTG Sentences: \n' + str(vtgList) \
-				+ '\n\nZDA Sentences: \n' + str(zdaList)
+			outputfileContents = []
+			# concatenate all four groups of sentences (no longer needed)
+			#	outputfileContents = 'Sentences: \n' \
+			#		+ '\n\nGGA Sentences: \n' + str(ggaList) \
+			#		+ '\n\nGST Sentences: \n' + str(gstList) \
+			#		+ '\n\nVTG Sentences: \n' + str(vtgList) \
+			#		+ '\n\nZDA Sentences: \n' + str(zdaList)
 			
+			outputfileContents = ''
 			i = 0
 			while i < (len(ggaList) - 1):
 				thisLine = ggaList[i]
 				nextline = ggaList[i+1]
-				print('\n\n')
-				print('Line: ', i)
+				NMEA_GGA_Dist(thisLine, nextline)
+
+				# Output
+				print('Line: ' + str(i))
 				print(thisLine)
 				print(nextline)
-				NMEA_GGA_Dist(thisLine, nextline)
+				outputStr = 'This Line Number: ' + str(i) \
+					+ '\nThis Line: ' + str(thisLine) + '\n' + str(thisLine) \
+					+ '\nNext Line: \n' + str(nextline) \
+					+ '\nLA1: ' + str(LA1) \
+					+ '\nLA2: ' + str(LA2) \
+					+ '\nLon1: ' + str(Lon1) \
+					+ '\nLon2: ' + str(Lon2) \
+					+ '\nLat1: ' + str(Lat1) \
+					+ '\nLon1: ' + str(Lon1) \
+					+ '\nLat2: ' + str(Lat2) \
+					+ '\nLon2: ' + str(Lon2) \
+					+ '\nDistance: ' + str(D) + '\n\n'
+
+				outputfileContents += outputStr
 				i = i+1
 
 			wOut = open(outputfile, "w")
@@ -160,6 +179,11 @@ def splitty(inputString):
 	return linesList
 
 def NMEA_GGA_Dist(NMEA_Line1, NMEA_Line2):
+	global Lat1
+	global Lat2
+	global Lon1
+	global Lon2
+
 	Lat1 = NMEA_LATLON_ToDecemal( NMEA_Get_Field( NMEA_Line1, 2 ), NMEA_Get_Field( NMEA_Line1, 3 ))
 	Lat2 = NMEA_LATLON_ToDecemal( NMEA_Get_Field( NMEA_Line2, 2 ), NMEA_Get_Field( NMEA_Line2, 3 ))
 	Lon1 = NMEA_LATLON_ToDecemal( NMEA_Get_Field( NMEA_Line1, 4 ), NMEA_Get_Field( NMEA_Line1, 5 ))
@@ -170,14 +194,13 @@ def NMEA_LATLON_ToDecemal(NMEA_Line, coordinateRef):
 	# print('Debug: NMEA_LATLON_ToDecemal(): NMEA_Line: ', NMEA_Line)
 	# print('Debug: NMEA_LATLON_ToDecemal(): coordinateRef: ', coordinateRef)
 
-	NMEA_Line.replace('\x00', '').strip()
-	NMEA_Line.replace('\x00', '')
+	# NMEA_Line.replace('\x00', '').strip()
 	coordinate = int(float(NMEA_Line))
 	# print('coordinate: ', coordinate)
 	decimal = ((coordinate / 100) + ((coordinate - ((coordinate / 100) * 100)) / 60))
 	if ((coordinateRef == str('S')) or (coordinateRef == str('W'))):
 		decimal = -(abs(decimal))
-		# print('Debug: ', coordinateRef, ': NMEA_LATLON_ToDecemal() and decimal: ', decimal)
+		# print('coordinateRef, ': NMEA_LATLON_ToDecemal() and decimal: ', decimal)
 		return decimal
 	else:
 		# print('Debug: ', coordinateRef, ': NMEA_LATLON_ToDecemal() and decimal: ', decimal)
@@ -189,6 +212,14 @@ def NMEA_Get_Field(NMEA_Line, Field):
 	return STG
 
 def GNSS_Distance(Lat1, Lon1, Lat2, Lon2):
+	global LA1
+	global LA2
+	global DLAT
+	global DLON
+	global D
+	global earthRadius
+	earthRadius = 6371000
+
 	# https://www.studytonight.com/post/trigonometric-function-in-python
 	LA1 = MATH_D2R(Lat1)
 	LA2 = MATH_D2R(Lat2)
@@ -197,7 +228,6 @@ def GNSS_Distance(Lat1, Lon1, Lat2, Lon2):
 	A = math.sin(DLAT/2)*math.sin(DLAT/2)+math.cos(LA1)*math.cos(LA2)*math.sin(DLON/2)*math.sin(DLON/2)
 	C = 2 * math.atan2(math.sqrt(A) ,math.sqrt(1-A))
 	D = (earthRadius * C)
-	print('Distance: ', D)
 	return D
 
 def MATH_D2R(Degrees):
