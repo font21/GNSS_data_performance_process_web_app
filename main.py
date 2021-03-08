@@ -79,7 +79,7 @@ def main(argv):
 			outputfile = arg
 			outputfileContents = ''
 			stepPrime = 0
-			while stepPrime < (len(ggaList) - 90):
+			while stepPrime < (len(ggaList) - 900):
 				thisLine = ggaList[stepPrime]
 
 				# Output
@@ -104,7 +104,7 @@ def main(argv):
 				global stepCompar
 				stepCompar = stepPrime + step9Hundo
 
-				while (step9Hundo < 100):
+				while (step9Hundo < 900):
 					thisLine = ggaList[stepPrime]
 					nextline = ggaList[stepCompar]
 					NMEA_GGA_Dist(thisLine, nextline)
