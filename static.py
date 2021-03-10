@@ -5,9 +5,12 @@ import math
 import os
 import sys, getopt
 
+
 # Global Variables
 theBigDlist = []
+step9HundoDList = []
 
+# Functions
 def main(argv):
 	global outputfileContents
 	global helpText
@@ -15,6 +18,7 @@ def main(argv):
 	global outputfile
 	global theBigD
 	global theBigDlist
+    global step9HundoDList
 
 	inputfile = ''
 	outputfile = ''
@@ -82,7 +86,8 @@ def main(argv):
 			while stepPrime < (len(ggaList) - 900):
 				thisLine = ggaList[stepPrime]
 
-				global step9Hundo
+				outputStr = 'ThisLine: ' + str(thisLine)
+                global step9Hundo
 				step9Hundo = 1
 
 				global stepCompar
@@ -99,7 +104,10 @@ def main(argv):
 					step9Hundo = step9Hundo + 1
 					stepCompar = stepCompar + 1
 
-				outputStr = '\nThis Distance: ' + str(D)
+				# True Lat, True Lon, Max Distance to following 15 minutes(900 GGA Messages), 
+                # GGA Field 6 (quality Indicator), GGA Field 7 (Number of sats), 
+                # GGA Field 8 (HDOP), GST Field 6(sigma Lat), GST field 7(sigma Lon)
+                outputStr = '\nThis Distance: ' + str(D)
 				outputfileContents += outputStr
 
 				stepPrime = int(stepPrime + 1)
