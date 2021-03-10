@@ -6,17 +6,16 @@ import os
 import sys, getopt
 
 # Global Variables
-
-global outputfileContents
+theBigDlist = []
 
 def main(argv):
+	global outputfileContents
 	global helpText
 	global inputfile
 	global outputfile
 	global theBigD
-	theBigDlist = []
+	global theBigDlist
 
-	theBigD = 0
 	inputfile = ''
 	outputfile = ''
 	helpText = 'static.py -i <inputfile> -o <outputfile>'
@@ -106,19 +105,18 @@ def main(argv):
 				stepPrime = int(stepPrime + 1)
 
 			# Exit stepPrime
-			print(theBigDlist)
+			# print(theBigDlist)
 			theBigDlist.sort()
-			theBigD_theBigDlist = theBigDlist[-1]
+			theBigD = theBigDlist[-1]
 			
 			# printing the last element 
-			print("Largest element is:", list1[-1])
+			print("Largest element is:", theBigDlist[-1])
 
 			theBigDtxt = '\n      **********************************************' \
 				+ '\n      **     Largest distance: ' + str(theBigD) \
-				+ '\n      **     theBigD from theBigDlist: ' + str(theBigD_theBigDlist) \
 				+ '\n      **********************************************\n\n' \
 
-			print(theBigDtxt)
+			# print(theBigDtxt)
 			outputfileContents += theBigDtxt
 
 			wOut = open(outputfile, "w")
@@ -181,24 +179,9 @@ def GNSS_Distance(Lat1, Lon1, Lat2, Lon2):
 	A = math.sin(DLAT/2)*math.sin(DLAT/2)+math.cos(LA1)*math.cos(LA2)*math.sin(DLON/2)*math.sin(DLON/2)
 	C = 2 * math.atan2(math.sqrt(A) ,math.sqrt(1-A))
 	D = (earthRadius * C)
-	theBiggestDFunc(D)
+	theBigDlist.append(D)
 	return D
-
-
-def theBiggestDFunc(theNewD):
-	global theBigD
-	global theBigDlist
-	theBigDlist = []
-
-
-	if (theNewD > theBigD):
-		theNewD = 0
-		theNewD = ''
-		theBigD = theNewD
-		
-	else:
-		pass
-	theBigDlist.append(theNewD)
+	
 	return theNewD
 
 
