@@ -14,6 +14,7 @@ def main(argv):
 	global inputfile
 	global outputfile
 	global theBigD
+	theBigDlist = []
 
 	theBigD = 0
 	inputfile = ''
@@ -82,22 +83,6 @@ def main(argv):
 			while stepPrime < (len(ggaList) - 900):
 				thisLine = ggaList[stepPrime]
 
-				# Output
-				print('\n')
-				print('\n')
-				print('stepPrime Line: ' + str(stepPrime))
-
-				outputStr = '\n      ##############################' \
-					+ '\n    ##################################' \
-					+ '\n  ######################################' \
-					+ '\n            This Working Line Number: ' + str(stepPrime) \
-					+ '\n  ######################################' \
-					+ '\n    ##################################' \
-					+ '\n      ##############################' \
-					+ '\n\nWorking Line: ' + str(thisLine) \
-					+ '\n\n'
-				outputfileContents += outputStr
-
 				global step9Hundo
 				step9Hundo = 1
 
@@ -109,34 +94,28 @@ def main(argv):
 					nextline = ggaList[stepCompar]
 					NMEA_GGA_Dist(thisLine, nextline)
 
-					print('step9Hundo: ' + str(step9Hundo))
-					print('stepCompar: ' + str(stepCompar))
-					
+					# print('step9Hundo: ' + str(step9Hundo))
+					# print('stepCompar: ' + str(stepCompar))
 
-					outputStr = '\n      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' \
-						+ '\n            This Compared Line Number: ' + str(stepCompar) \
-						+ '\n      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' \
-						+ '\n\nThis Line: ' + str(thisLine) \
-						+ '\nNext Line: ' + str(nextline) \
-						+ '\nLA1: ' + str(LA1) \
-						+ '\nLA2: ' + str(LA2) \
-						+ '\nLon1: ' + str(Lon1) \
-						+ '\nLon2: ' + str(Lon2) \
-						+ '\nLat1: ' + str(Lat1) \
-						+ '\nLon1: ' + str(Lon1) \
-						+ '\nLat2: ' + str(Lat2) \
-						+ '\nLon2: ' + str(Lon2) \
-						+ '\nDistance: ' + str(D) \
-						+ '\n\n'
-
-					outputfileContents += outputStr
 					step9Hundo = step9Hundo + 1
 					stepCompar = stepCompar + 1
 
+				outputStr = '\nThis Distance: ' + str(D)
+				outputfileContents += outputStr
+
 				stepPrime = int(stepPrime + 1)
 
+			# Exit stepPrime
+			print(theBigDlist)
+			theBigDlist.sort()
+			theBigD_theBigDlist = theBigDlist[-1]
+			
+			# printing the last element 
+			print("Largest element is:", list1[-1])
+
 			theBigDtxt = '\n      **********************************************' \
-				+ '\n      **     Largest distance: ' + str(theBigD) + '   **' \
+				+ '\n      **     Largest distance: ' + str(theBigD) \
+				+ '\n      **     theBigD from theBigDlist: ' + str(theBigD_theBigDlist) \
 				+ '\n      **********************************************\n\n' \
 
 			print(theBigDtxt)
@@ -149,8 +128,8 @@ def main(argv):
 			print('File Out section complete.')
 			wOut.close()
 
-	print('Input file is ', inputfile)
-	print('Output file is ', outputfile)
+	print('Input file is ' + str(inputfile))
+	print('Output file is ' + str(outputfile))
 
 
 def NMEA_GGA_Dist(NMEA_Line1, NMEA_Line2):
@@ -202,17 +181,25 @@ def GNSS_Distance(Lat1, Lon1, Lat2, Lon2):
 	A = math.sin(DLAT/2)*math.sin(DLAT/2)+math.cos(LA1)*math.cos(LA2)*math.sin(DLON/2)*math.sin(DLON/2)
 	C = 2 * math.atan2(math.sqrt(A) ,math.sqrt(1-A))
 	D = (earthRadius * C)
-	theBiggestD(D)
+	theBiggestDFunc(D)
 	return D
 
 
-def theBiggestD(theNewD):
+def theBiggestDFunc(theNewD):
 	global theBigD
+	global theBigDlist
+	theBigDlist = []
+
 
 	if (theNewD > theBigD):
+		theNewD = 0
+		theNewD = ''
 		theBigD = theNewD
+		
 	else:
 		pass
+	theBigDlist.append(theNewD)
+	return theNewD
 
 
 def MATH_D2R(Degrees):
