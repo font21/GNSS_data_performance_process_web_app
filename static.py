@@ -7,8 +7,9 @@ import sys, getopt
 
 
 # Global Variables
-theBigDlist = []
-step9HundoDList = []
+theBigDlist = [] # The main/whole Distance List
+step9HundoDList = [] # The 900 Distance list that will be cleared every 900 turns of step9HundoDList
+
 
 # Functions
 def main(argv):
@@ -16,20 +17,22 @@ def main(argv):
 	global helpText
 	global inputfile
 	global outputfile
-	global theBigD
-	global theBigDlist
-    global step9HundoDList
+	global theBigD # Variable to hold the largest Distance
+	global theBigDlist # The main/whole Distance List
+	global theBig9D # Variable to hold the largest Distance in the 900 Distance list (step9HundoDList)
+    global step9HundoDList # The 900 Distance list that will be cleared every 900 turns of step9HundoDList
 
 	inputfile = ''
 	outputfile = ''
 	helpText = 'static.py -i <inputfile> -o <outputfile>'
 
-	staticLineList = []
+	staticLineList = [] # Holds all the lines after they have been split from the staticInputFileContents string.
 	ggaList = []
 	gstList = []
 	vtgList = []
 	zdaList = []
 
+	# The beginning of the file manipulation
 	try:
 		opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
 	except getopt.GetoptError:
@@ -83,17 +86,35 @@ def main(argv):
 			outputfile = arg
 			outputfileContents = ''
 			stepPrime = 0
+
+			# Begin main loop (with ggaList) using stepPrime as an iterator
 			while stepPrime < (len(ggaList) - 900):
 				thisLine = ggaList[stepPrime]
 
-				outputStr = 'ThisLine: ' + str(thisLine)
-                global step9Hundo
+				# Fill the variable outputStr with content to keep each step separated, for debugging.
+				# This is a large obvious header for each main line compared.
+				outputStr = '\n      ##############################\n    ##################################\n  ######################################' \
+					+ '\n            This Working Line Number: ' + str(stepPrime) \
+					+ '\n  ######################################\n    ##################################\n      ##############################' \
+					+ '\n\nWorking Line: ' + str(thisLine) \
+					+ '\n\n'
+				
+				# Once the variable outputStr is populated correctly, concatenate it with outputfileContents
+				outputfileContents += outputStr
+				
+				# Make step9Hundo and stepCompar global within the function so that they survive being passed.
+				global step9Hundo
 				step9Hundo = 1
 
+				# The variable stepCompar assists the iterator (stepCompar) by pointing to the correct sentence/line to compare to.
 				global stepCompar
+
+				# stepCompar is calculated by adding stepPrime (the main iterator) to the step9Hundo (the nested iterator)
 				stepCompar = stepPrime + step9Hundo
 
+				# Begin nested loop (for 900 lines) using step9Hundo as an iterator
 				while (step9Hundo < 900):
+					# 
 					thisLine = ggaList[stepPrime]
 					nextline = ggaList[stepCompar]
 					NMEA_GGA_Dist(thisLine, nextline)
@@ -101,18 +122,47 @@ def main(argv):
 					# print('step9Hundo: ' + str(step9Hundo))
 					# print('stepCompar: ' + str(stepCompar))
 
+					# Fill the variable outputStr with content to keep each step separated, for debugging.
+					# This is a smaller obvious header for each stepped line compared.
+					outputStr = '\n      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' \
+						+ '\n            This Compared Line Number: ' + str(stepCompar) \
+						+ '\n      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' \
+						+ '\n\nThis Line: ' + str(thisLine) \
+						+ '\nNext Line: ' + str(nextline) \
+						+ '\nLA1: ' + str(LA1) \
+						+ '\nLA2: ' + str(LA2) \
+						+ '\nLon1: ' + str(Lon1) \
+						+ '\nLon2: ' + str(Lon2) \
+						+ '\nLat1: ' + str(Lat1) \
+						+ '\nLon1: ' + str(Lon1) \
+						+ '\nLat2: ' + str(Lat2) \
+						+ '\nLon2: ' + str(Lon2) \
+						+ '\nDistance: ' + str(D) \
+						+ '\n\n'
+					outputfileContents += outputStr
+
 					step9Hundo = step9Hundo + 1
 					stepCompar = stepCompar + 1
+					# Exit nested loop (step9Hundo for 900 lines)
 
+				# Clear step9HundoDList (Nested 900 Loop)				
+				step9HundoDList.sort()
+				theBig9D = step9HundoDList[-1]
+				step9HundoDList.clear()
+				
+				# -=:::::::::::::::::::::::::THE EMAILED INSTRUCTIONs FROM JASON:::::::::::::::::::::::::=-
 				# True Lat, True Lon, Max Distance to following 15 minutes(900 GGA Messages), 
                 # GGA Field 6 (quality Indicator), GGA Field 7 (Number of sats), 
                 # GGA Field 8 (HDOP), GST Field 6(sigma Lat), GST field 7(sigma Lon)
-                outputStr = '\nThis Distance: ' + str(D)
+				# -=:::::::::::::::::::::::::THE EMAILED INSTRUCTIONs FROM JASON:::::::::::::::::::::::::=-
+                
+				outputStr = '\nLargest Distance of this 900 line comparison: ' + str(theBig9D)
 				outputfileContents += outputStr
 
 				stepPrime = int(stepPrime + 1)
+				# Exit stepPrime (main loop)
 
-			# Exit stepPrime
+			
 			# print(theBigDlist)
 			theBigDlist.sort()
 			theBigD = theBigDlist[-1]
@@ -187,7 +237,10 @@ def GNSS_Distance(Lat1, Lon1, Lat2, Lon2):
 	A = math.sin(DLAT/2)*math.sin(DLAT/2)+math.cos(LA1)*math.cos(LA2)*math.sin(DLON/2)*math.sin(DLON/2)
 	C = 2 * math.atan2(math.sqrt(A) ,math.sqrt(1-A))
 	D = (earthRadius * C)
+
+	# Push the current calculated distance to both the main/whole Distance List and the 900 Distance List
 	theBigDlist.append(D)
+	step9HundoDList.append(D)
 	return D
 	
 	return theNewD
