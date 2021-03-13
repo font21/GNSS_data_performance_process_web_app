@@ -115,9 +115,11 @@ def main(argv):
 				# Begin nested loop (for 900 lines) using step9Hundo as an iterator
 				while (step9Hundo < 900):
 					# 
-					thisLine = ggaList[stepPrime]
+					print('thisLine: ' + str(thisLine))
 					nextline = ggaList[stepCompar]
 					NMEA_GGA_Dist(thisLine, nextline)
+
+					print('thisLine: ' + str(thisLine) + '\nnextline: ' + str(nextline))
 
 					# print('step9Hundo: ' + str(step9Hundo))
 					# print('stepCompar: ' + str(stepCompar))
