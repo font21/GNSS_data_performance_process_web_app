@@ -115,33 +115,35 @@ def main(argv):
 
 				# Begin nested loop (for 900 lines) using step9Hundo as an iterator
 				while (step9Hundo < 900):
-					# 
-					print('thisLine: ' + str(thisLine))
 					nextline = ggaList[stepCompar]
 					NMEA_GGA_Dist(thisLine, nextline)
 
-					print('thisLine: ' + str(thisLine) + '\nnextline: ' + str(nextline))
+					# Debug Print lines.
+					# print('thisLine: ' + str(thisLine) + '\nnextline: ' + str(nextline))
 
 					# print('step9Hundo: ' + str(step9Hundo))
 					# print('stepCompar: ' + str(stepCompar))
 
 					# Fill the variable outputStr with content to keep each step separated, for debugging.
-					# This is a smaller obvious header for each stepped line compared.
-					outputStr = '\n      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' \
-						+ '\n            This Compared Line Number: ' + str(stepCompar) \
-						+ '\n      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' \
-						+ '\n\nThis Line: ' + str(thisLine) \
-						+ '\nNext Line: ' + str(nextline) \
-						+ '\nLA1: ' + str(LA1) \
-						+ '\nLA2: ' + str(LA2) \
-						+ '\nLon1: ' + str(Lon1) \
-						+ '\nLon2: ' + str(Lon2) \
-						+ '\nLat1: ' + str(Lat1) \
-						+ '\nLon1: ' + str(Lon1) \
-						+ '\nLat2: ' + str(Lat2) \
-						+ '\nLon2: ' + str(Lon2) \
-						+ '\nDistance: ' + str(D) \
-						+ '\n\n'
+					# This is a smaller less-obvious header for each stepped line compared.
+					if step9Hundo < 2:
+						outputStr = '\n      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' \
+							+ '\n            This Compared Line Number: ' + str(stepCompar) \
+							+ '\n      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' \
+							+ '\n\nNext Line: ' + str(nextline) \
+							+ '\nLA1: ' + str(LA1) \
+							+ '\nLA2: ' + str(LA2) \
+							+ '\nLon1: ' + str(Lon1) \
+							+ '\nLon2: ' + str(Lon2) \
+							+ '\nLat1: ' + str(Lat1) \
+							+ '\nLon1: ' + str(Lon1) \
+							+ '\nLat2: ' + str(Lat2) \
+							+ '\nLon2: ' + str(Lon2) \
+							+ '\nDistance: ' + str(D)
+						else:
+							outputStr = '\nNext Line: ' + str(nextline) \
+								+ '\nDistance: ' + str(D)
+
 					outputfileContents += outputStr
 
 					step9Hundo = step9Hundo + 1
