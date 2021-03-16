@@ -15,39 +15,41 @@ step9HundoDList = [] # The 900 Distance list that will be cleared every 900 turn
 def main(argv):
 	global outputfileContents
 	global helpText
-	global inputfile
-	global outputfile
-	global theBigD # Variable to hold the largest Distance
-	global theBigDlist # The main/whole Distance List
-	global theBig9D # Variable to hold the largest Distance in the 900 Distance list (step9HundoDList)
-    global step9HundoDList # The 900 Distance list that will be cleared every 900 turns of step9HundoDList
+	global inputfile # Holds the path to the input file that will eventually be split into staticInputFileContents string.
+	global outputfile # Holds the path to the output file that will eventually be written to and spit out.
+	global theBigDlist # The main/whole Distance List.
+	global theBigD # Variable to hold the largest Distance (the largest vaiable in the theBigDlist list).
+	global theBig9D # Variable to hold the largest 900Distance in the 900 Distance list (step9HundoDList)
+	global step9HundoDList # The 900 Distance list that will be cleared every 900 turns of step9HundoDList
 
 	inputfile = ''
 	outputfile = ''
 	helpText = 'static.py -i <inputfile> -o <outputfile>'
 
-	staticLineList = [] # Holds all the lines after they have been split from the staticInputFileContents string.
-	ggaList = []
-	gstList = []
-	vtgList = []
-	zdaList = []
+	staticLineList = [] # Holds all the lines after they have been split from the staticInputFileContents string pulled from the input file.
+	ggaList = [] # Holds only the GGA sentences.
+	gstList = [] # Holds only the GST sentences.
+	vtgList = [] # Holds only the VTG sentences.
+	zdaList = [] # Holds only the ZDA sentences.
 
 	# The beginning of the file manipulation
 	try:
+		# Get arguments passed from the commandline
 		opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
 	except getopt.GetoptError:
+		# If there are no expected/matching command line arguments, fail and print instructions/help
 		print(helpText)
 		sys.exit(2)
 	for opt, arg in opts:
+		# This requests to print instructions/help
 		if opt == '-h':
 			print(helpText)
 			sys.exit()
 		elif opt in ("-i", "--ifile"):
 			inputfile = arg
-			
+
 			inFile = open(inputfile, "r")
 			staticInputFileContents = inFile.read()
-			
 			staticLineList = staticInputFileContents.splitlines()
 
 			## Create ggaList
@@ -96,9 +98,8 @@ def main(argv):
 				outputStr = '\n      ##############################\n    ##################################\n  ######################################' \
 					+ '\n            This Working Line Number: ' + str(stepPrime) \
 					+ '\n  ######################################\n    ##################################\n      ##############################' \
-					+ '\n\nWorking Line: ' + str(thisLine) \
-					+ '\n\n'
-				
+					+ '\n\nWorking Line: ' + str(thisLine) + '\n\n'
+
 				# Once the variable outputStr is populated correctly, concatenate it with outputfileContents
 				outputfileContents += outputStr
 				
@@ -150,7 +151,8 @@ def main(argv):
 				# Clear step9HundoDList (Nested 900 Loop)				
 				step9HundoDList.sort()
 				theBig9D = step9HundoDList[-1]
-				step9HundoDList.clear()
+				# step9HundoDList.clear()
+				step9HundoDList = []
 				
 				# -=:::::::::::::::::::::::::THE EMAILED INSTRUCTIONs FROM JASON:::::::::::::::::::::::::=-
 				# True Lat, True Lon, Max Distance to following 15 minutes(900 GGA Messages), 
@@ -165,20 +167,18 @@ def main(argv):
 				# Exit stepPrime (main loop)
 
 			
-			# print(theBigDlist)
+			# Largest Distance (The Biggest D) Produce, Concatenate, and Print(theBigDlist)
 			theBigDlist.sort()
 			theBigD = theBigDlist[-1]
-			
-			# printing the last element 
-			print("Largest element is:", theBigDlist[-1])
 
 			theBigDtxt = '\n      **********************************************' \
 				+ '\n      **     Largest distance: ' + str(theBigD) \
 				+ '\n      **********************************************\n\n' \
 
-			# print(theBigDtxt)
+			print(theBigDtxt)
 			outputfileContents += theBigDtxt
 
+			# Assign the contents of outputfileContents to outputfile
 			wOut = open(outputfile, "w")
 			wOut.write(outputfileContents)
 			
@@ -244,8 +244,6 @@ def GNSS_Distance(Lat1, Lon1, Lat2, Lon2):
 	theBigDlist.append(D)
 	step9HundoDList.append(D)
 	return D
-	
-	return theNewD
 
 
 def MATH_D2R(Degrees):
