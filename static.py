@@ -126,7 +126,7 @@ def main(argv):
 
 					# Fill the variable outputStr with content to keep each step separated, for debugging.
 					# This is a smaller less-obvious header for each stepped line compared.
-					if step9Hundo < 2:
+					if (step9Hundo < 2):
 						outputStr = '\n      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' \
 							+ '\n            This Compared Line Number: ' + str(stepCompar) \
 							+ '\n      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' \
@@ -140,9 +140,9 @@ def main(argv):
 							+ '\nLat2: ' + str(Lat2) \
 							+ '\nLon2: ' + str(Lon2) \
 							+ '\nDistance: ' + str(D)
-						else:
-							outputStr = '\nNext Line: ' + str(nextline) \
-								+ '\nDistance: ' + str(D)
+					else:
+						outputStr = '\nNext Line: ' + str(nextline) \
+							+ '\nDistance: ' + str(D)
 
 					outputfileContents += outputStr
 
