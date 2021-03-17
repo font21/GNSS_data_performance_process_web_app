@@ -3,7 +3,9 @@
 import fileinput
 import math
 import os
+from progressbar import Bar, BouncingBar, ETA, AdaptiveETA, Percentage, ProgressBar
 import sys, getopt
+import time
 
 
 # Global Variables
@@ -36,10 +38,12 @@ def main(argv):
 	try:
 		# Get arguments passed from the commandline
 		opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
+
 	except getopt.GetoptError:
 		# If there are no expected/matching command line arguments, fail and print instructions/help
 		print(helpText)
 		sys.exit(2)
+
 	for opt, arg in opts:
 		# This requests to print instructions/help
 		if opt == '-h':
@@ -89,8 +93,22 @@ def main(argv):
 			outputfileContents = ''
 			stepPrime = 0
 
+			# Progress bar's driver code
+			widgets = [Percentage(),
+						' ', Bar(),
+						' ', ETA(),
+						' ', AdaptiveETA()]
+			pbar = ProgressBar(widgets=widgets, maxval=len(ggaList))
+			pbar.start()
+
 			# Begin main loop (with ggaList) using stepPrime as an iterator
 			while stepPrime < (len(ggaList) - 900):
+
+				# Progress bar's advance code
+				# bar.next()
+				# bar.update(stepPrime)
+				pbar.update(stepPrime + 1)
+				
 				thisLine = ggaList[stepPrime]
 
 				# Fill the variable outputStr with content to keep each step separated, for debugging.
@@ -141,8 +159,9 @@ def main(argv):
 							+ '\nLon2: ' + str(Lon2) \
 							+ '\nDistance: ' + str(D)
 					else:
-						outputStr = '\nNext Line: ' + str(nextline) \
-							+ '\nDistance: ' + str(D)
+						# outputStr = '\nNext Line: ' + str(nextline) \
+						# 	+ '\nDistance: ' + str(D)
+						pass
 
 					outputfileContents += outputStr
 
@@ -150,10 +169,9 @@ def main(argv):
 					stepCompar = stepCompar + 1
 					# Exit nested loop (step9Hundo for 900 lines)
 
-				# Clear step9HundoDList (Nested 900 Loop)				
+				# Sort, assign largest Distance, and clear step9HundoDList (Nested 900 Loop)				
 				step9HundoDList.sort()
 				theBig9D = step9HundoDList[-1]
-				# step9HundoDList.clear()
 				step9HundoDList = []
 				
 				# -=:::::::::::::::::::::::::THE EMAILED INSTRUCTIONs FROM JASON:::::::::::::::::::::::::=-
@@ -162,12 +180,15 @@ def main(argv):
                 # GGA Field 8 (HDOP), GST Field 6(sigma Lat), GST field 7(sigma Lon)
 				# -=:::::::::::::::::::::::::THE EMAILED INSTRUCTIONs FROM JASON:::::::::::::::::::::::::=-
                 
-				outputStr = '\nLargest Distance of this 900 line comparison: ' + str(theBig9D)
+				outputStr = '\n\n\nLargest Distance of this 900 line comparison: ' + str(theBig9D)
 				outputfileContents += outputStr
 
 				stepPrime = int(stepPrime + 1)
 				# Exit stepPrime (main loop)
 
+			
+			# Progress bar's finish code
+			pbar.finish()
 			
 			# Largest Distance (The Biggest D) Produce, Concatenate, and Print(theBigDlist)
 			theBigDlist.sort()
@@ -190,6 +211,17 @@ def main(argv):
 
 	print('Input file is ' + str(inputfile))
 	print('Output file is ' + str(outputfile))
+
+
+# Function to create Progress bar
+def animated_marker(): 
+      
+    widgets = ['Loading: ', progressbar.AnimatedMarker()] 
+    bar = progressbar.ProgressBar(widgets=widgets).start() 
+      
+    for i in range(50): 
+        time.sleep(0.1) 
+        bar.update(i) 
 
 
 def NMEA_GGA_Dist(NMEA_Line1, NMEA_Line2):
