@@ -105,14 +105,11 @@ def main(argv):
 			while stepPrime < (len(ggaList) - 900):
 
 				# Progress bar's advance code
-				# bar.next()
-				# bar.update(stepPrime)
 				pbar.update(stepPrime + 1)
 				
 				thisLine = ggaList[stepPrime]
 
 				# Fill the variable outputStr with content to keep each step separated, for debugging.
-				# This is a large obvious header for each main line compared.
 				outputStr = '\n      ##############################\n    ##################################\n  ######################################' \
 					+ '\n            This Working Line Number: ' + str(stepPrime) \
 					+ '\n  ######################################\n    ##################################\n      ##############################' \
@@ -142,21 +139,10 @@ def main(argv):
 					# print('step9Hundo: ' + str(step9Hundo))
 					# print('stepCompar: ' + str(stepCompar))
 
-					# Fill the variable outputStr with content to keep each step separated, for debugging.
-					# This is a smaller less-obvious header for each stepped line compared.
+					# Fill the variable outputStr with content to document each stepped line compared.
+
 					if (step9Hundo < 2):
-						outputStr = '\n      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' \
-							+ '\n            This Compared Line Number: ' + str(stepCompar) \
-							+ '\n      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' \
-							+ '\n\nNext Line: ' + str(nextline) \
-							+ '\nLA1: ' + str(LA1) \
-							+ '\nLA2: ' + str(LA2) \
-							+ '\nLon1: ' + str(Lon1) \
-							+ '\nLon2: ' + str(Lon2) \
-							+ '\nLat1: ' + str(Lat1) \
-							+ '\nLon1: ' + str(Lon1) \
-							+ '\nLat2: ' + str(Lat2) \
-							+ '\nLon2: ' + str(Lon2) \
+						outputStr = 'Next Line: ' + str(nextline) \
 							+ '\nDistance: ' + str(D)
 					else:
 						# outputStr = '\nNext Line: ' + str(nextline) \
@@ -169,20 +155,24 @@ def main(argv):
 					stepCompar = stepCompar + 1
 					# Exit nested loop (step9Hundo for 900 lines)
 
-				# Sort, assign largest Distance, and clear step9HundoDList (Nested 900 Loop)				
-				step9HundoDList.sort()
-				theBig9D = step9HundoDList[-1]
-				step9HundoDList = []
-				
 				# -=:::::::::::::::::::::::::THE EMAILED INSTRUCTIONs FROM JASON:::::::::::::::::::::::::=-
 				# True Lat, True Lon, Max Distance to following 15 minutes(900 GGA Messages), 
                 # GGA Field 6 (quality Indicator), GGA Field 7 (Number of sats), 
                 # GGA Field 8 (HDOP), GST Field 6(sigma Lat), GST field 7(sigma Lon)
 				# -=:::::::::::::::::::::::::THE EMAILED INSTRUCTIONs FROM JASON:::::::::::::::::::::::::=-
                 
+				
+
+				# Sort and assign the largest Distance of this loop
+				step9HundoDList.sort()
+				theBig9D = step9HundoDList[-1]
 				outputStr = '\n\n\nLargest Distance of this 900 line comparison: ' + str(theBig9D)
 				outputfileContents += outputStr
+				
+				# clear step9HundoDList (Nested 900 Loop) for the next loop
+				step9HundoDList = []
 
+				# Increment
 				stepPrime = int(stepPrime + 1)
 				# Exit stepPrime (main loop)
 
