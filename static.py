@@ -58,32 +58,13 @@ def main(argv):
 
 			## Create ggaList
 			ggaList = [i for i in staticLineList if i[3:6] == 'GGA']
-			### Explictly filter out other non-GGA sentences because sometimes those got through.
-			#ggaList = [x for x in ggaList if x[3:6] != 'GST']
-			#ggaList = [x for x in ggaList if x[3:6] != 'VTG']
-			#ggaList = [x for x in ggaList if x[3:6] != 'ZDA' ]
-
 			## Create gstList
 			gstList = [i for i in staticLineList if i[3:6] == 'GST']
-			### Explictly filter out other non-GST sentences because sometimes those got through.
-			#gstList = [x for x in ggaList if x[3:6] != 'GGA']
-			#gstList = [x for x in ggaList if x[3:6] != 'VTG']
-			#gstList = [x for x in ggaList if x[3:6] != 'ZDA' ]
-
 			## Create vtgList
 			vtgList = [i for i in staticLineList if i[3:6] == 'VTG']
-			### Explictly filter out other non-VTG sentences because sometimes those got through.
-			#vtgList = [x for x in ggaList if x[3:6] != 'GGA']
-			#vtgList = [x for x in ggaList if x[3:6] != 'GST']
-			#vtgList = [x for x in ggaList if x[3:6] != 'ZDA' ]
 
 			## Create zdaList
 			zdaList = [i for i in staticLineList if i[3:6] == 'ZDA']
-			### Explictly filter out other non-ZDA sentences because sometimes those got through.
-			#zdaList = [x for x in ggaList if x[3:6] != 'GGA']
-			#zdaList = [x for x in ggaList if x[3:6] != 'GST']
-			#zdaList = [x for x in ggaList if x[3:6] != 'VTG' ]
-
 			# File In clean up
 			print('File In section complete.')
 			inFile.close()
@@ -105,10 +86,8 @@ def main(argv):
 			while stepPrime < (len(ggaList) - 900):
 
 				# Progress bar's advance code
-				# bar.next()
-				# bar.update(stepPrime)
 				pbar.update(stepPrime + 1)
-				
+
 				thisLine = ggaList[stepPrime]
 
 				# Once the variable outputStr is populated correctly, concatenate it with outputfileContents
@@ -123,7 +102,24 @@ def main(argv):
 
 				# stepCompar is calculated by adding stepPrime (the main iterator) to the step9Hundo (the nested iterator)
 				stepCompar = stepPrime + step9Hundo
+
+				# Zero out the Distance variable before commencing the nested loop
 				Distance = 0.0
+
+				# GGA Field 6 (quality Indicator)
+				qIndicator = NMEA_Get_Field( thisLine, 6 )
+
+				# GGA Field 7 (Number of sats)
+				numoSats = NMEA_Get_Field( thisLine, 7 )
+
+				# GGA Field 8 (HDOP)
+				HDOP = NMEA_Get_Field( thisLine, 8 )
+
+				# GST Field 6 (sigma Lat)
+				GSTSigmaLat = NMEA_Get_Field( GSTlist[i], 6 )
+
+				# GST field 7(sigma Lon)
+				GSTSigmaLon = NMEA_Get_Field( GSTlist[i], 7 )
 
 				# Begin nested loop (for 900 lines) using step9Hundo as an iterator
 				while (step9Hundo < 900):
@@ -131,80 +127,27 @@ def main(argv):
 					Distance2 = NMEA_GGA_Dist(thisLine, nextline)
 					if (Distance < Distance2):
 						Distance = Distance2
-					# Debug Print lines.
-					# print('thisLine: ' + str(thisLine) + '\nnextline: ' + str(nextline))
-
-					# print('step9Hundo: ' + str(step9Hundo))
-					# print('stepCompar: ' + str(stepCompar))
-
-					# Fill the variable outputStr with content to keep each step separated, for debugging.
-					# This is a smaller less-obvious header for each stepped line compared.
-					#if (step9Hundo < 2):
-					#	outputStr = '\n      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' \
-					#		+ '\n            This Compared Line Number: ' + str(stepCompar) \
-					#		+ '\n      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' \
-					#		+ '\n\nNext Line: ' + str(nextline) \
-					#		+ '\nLA1: ' + str(LA1) \
-					#		+ '\nLA2: ' + str(LA2) \
-					#		+ '\nLon1: ' + str(Lon1) \
-					#		+ '\nLon2: ' + str(Lon2) \
-					#		+ '\nLat1: ' + str(Lat1) \
-					#		+ '\nLon1: ' + str(Lon1) \
-					#		+ '\nLat2: ' + str(Lat2) \
-					#		+ '\nLon2: ' + str(Lon2) \
-					#		+ '\nDistance: ' + str(D)
-					#else:
-					#	# outputStr = '\nNext Line: ' + str(nextline) \
-					#	# 	+ '\nDistance: ' + str(D)
-					#	pass
-
-					#outputfileContents += outputStr
 
 					step9Hundo = step9Hundo + 1
 					stepCompar = stepCompar + 1
 					# Exit nested loop (step9Hundo for 900 lines)
 
-				outputfileContents += thisLine + " - " + str(Distance)
-				# Sort, assign largest Distance, and clear step9HundoDList (Nested 900 Loop)				
-				step9HundoDList.sort()
-				theBig9D = step9HundoDList[-1]
-				step9HundoDList = []
-				
-				# -=:::::::::::::::::::::::::THE EMAILED INSTRUCTIONs FROM JASON:::::::::::::::::::::::::=-
-				# True Lat (Lat1), True Lon (Lon1), Max Distance to following 15 minutes(900 GGA Messages), 
-                # GGA Field 6 (quality Indicator), GGA Field 7 (Number of sats), 
-                # GGA Field 8 (HDOP), 
-				# GST Field 6(sigma Lat), 
-				## if GGAlist[i][6] then GSTlist[i][6]
-				# GST field 7(sigma Lon)
-				## if GGAlist[i][7] then GSTlist[i][7]
+				outputStr = str(Lat1) + ',' \
+					+ str(Lon1) + ',' \
+					+ str(Distance) + ',' \
+					+ str(qIndicator) + ',' \
+					+ str(numoSats) + ',' \
+					+ str(HDOP) + ',' \
+					+ str(GSTSigmaLat) + ',' \
+					+ str(GSTSigmaLon)
 
-				# Example
-				## Input:
-				## Output: 36.xxx, -97.xxxx, 
-
-				# -=:::::::::::::::::::::::::THE EMAILED INSTRUCTIONs FROM JASON:::::::::::::::::::::::::=-
-
-				#outputStr = '\n\n\nLargest Distance of this 900 line comparison: ' + str(theBig9D)
-				#outputfileContents += outputStr
+				outputfileContents += outputStr
 
 				stepPrime = int(stepPrime + 1)
 				# Exit stepPrime (main loop)
 
-			
-			# Progress bar's finish code
+			# Progress bar's finish code (Make it 100%)
 			pbar.finish()
-			
-			# Largest Distance (The Biggest D) Produce, Concatenate, and Print(theBigDlist)
-			theBigDlist.sort()
-			theBigD = theBigDlist[-1]
-
-			theBigDtxt = '\n      **********************************************' \
-				+ '\n      **     Largest distance: ' + str(theBigD) \
-				+ '\n      **********************************************\n\n' \
-
-			print(theBigDtxt)
-			outputfileContents += theBigDtxt
 
 			# Assign the contents of outputfileContents to outputfile
 			wOut = open(outputfile, "w")
@@ -216,18 +159,6 @@ def main(argv):
 
 	print('Input file is ' + str(inputfile))
 	print('Output file is ' + str(outputfile))
-
-
-# Function to create Progress bar
-def animated_marker(): 
-
-	widgets = ['Loading: ', progressbar.AnimatedMarker()] 
-	bar = progressbar.ProgressBar(widgets=widgets).start() 
-		
-	for i in range(50): 
-		time.sleep(0.1) 
-		bar.update(i) 
-
 
 def NMEA_GGA_Dist(NMEA_Line1, NMEA_Line2):
 	global Lat1
@@ -291,4 +222,4 @@ def MATH_D2R(Degrees):
 
 
 if __name__ == "__main__":
-	main(sys.argv[
+	main(sys.argv[1:])
