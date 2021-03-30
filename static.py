@@ -15,18 +15,20 @@ step9HundoDList = [] # The 900 Distance list that will be cleared every 900 turn
 
 # Functions
 def main(argv):
-	global outputfileContents
+	
 	global helpText
 	global inputfile # Holds the path to the input file that will eventually be split into staticInputFileContents string.
-	global outputfile # Holds the path to the output file that will eventually be written to and spit out.
-	global theBigDlist # The main/whole Distance List.
+	global step9HundoDList # The 900 Distance list that will be cleared every 900 turns of step9HundoDList
 	global theBigD # Variable to hold the largest Distance (the largest vaiable in the theBigDlist list).
 	global theBig9D # Variable to hold the largest 900Distance in the 900 Distance list (step9HundoDList)
-	global step9HundoDList # The 900 Distance list that will be cleared every 900 turns of step9HundoDList
+	global outputfile # Holds the path to the output file that will eventually be written to and spit out.
+	global outputfileContents
+	global outputStr
 
 	inputfile = ''
 	outputfile = ''
 	helpText = 'static.py -i <inputfile> -o <outputfile>'
+	outputfileContents = ''
 
 	staticLineList = [] # Holds all the lines after they have been split from the staticInputFileContents string pulled from the input file.
 	ggaList = [] # Holds only the GGA sentences.
@@ -82,6 +84,13 @@ def main(argv):
 			pbar = ProgressBar(widgets=widgets, maxval=len(ggaList))
 			pbar.start()
 
+			# Header Line (Top Line in file)
+			outputStr = 'True Latitute,True Longitude,Max Distance (following 900 Messages),Quality,Number of sats,HDOP,Sigma Lat,Sigma Lon' \
+					+ '\n'
+
+			# Once the variable outputStr is populated correctly, concatenate itself with outputfileContents
+			outputfileContents += outputStr
+
 			# Begin main loop (with ggaList) using stepPrime as an iterator
 			while stepPrime < (len(ggaList) - 900):
 
@@ -90,9 +99,6 @@ def main(argv):
 
 				thisLine = ggaList[stepPrime]
 
-				# Once the variable outputStr is populated correctly, concatenate it with outputfileContents
-				outputfileContents += outputStr
-				
 				# Make step9Hundo and stepCompar global within the function so that they survive being passed.
 				global step9Hundo
 				step9Hundo = 1
@@ -116,10 +122,10 @@ def main(argv):
 				HDOP = NMEA_Get_Field( thisLine, 8 )
 
 				# GST Field 6 (sigma Lat)
-				GSTSigmaLat = NMEA_Get_Field( GSTlist[i], 6 )
+				GSTSigmaLat = NMEA_Get_Field( gstList[stepPrime], 6 )
 
-				# GST field 7(sigma Lon)
-				GSTSigmaLon = NMEA_Get_Field( GSTlist[i], 7 )
+				# GST Field 7 (sigma Lon)
+				GSTSigmaLon = NMEA_Get_Field( gstList[stepPrime], 7 )
 
 				# Begin nested loop (for 900 lines) using step9Hundo as an iterator
 				while (step9Hundo < 900):
@@ -139,7 +145,8 @@ def main(argv):
 					+ str(numoSats) + ',' \
 					+ str(HDOP) + ',' \
 					+ str(GSTSigmaLat) + ',' \
-					+ str(GSTSigmaLon)
+					+ str(GSTSigmaLon) \
+					+ '\n'
 
 				outputfileContents += outputStr
 
@@ -210,9 +217,6 @@ def GNSS_Distance(Lat1, Lon1, Lat2, Lon2):
 	C = 2 * math.atan2(math.sqrt(A) ,math.sqrt(1-A))
 	D = (earthRadius * C)
 
-	# Push the current calculated distance to both the main/whole Distance List and the 900 Distance List
-	theBigDlist.append(D)
-	step9HundoDList.append(D)
 	return D
 
 
